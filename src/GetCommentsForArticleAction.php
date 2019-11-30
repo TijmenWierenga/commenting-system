@@ -9,15 +9,19 @@ use Ramsey\Uuid\UuidInterface;
 final class GetCommentsForArticleAction
 {
     private CommentRepository $commentRepository;
+    private ArticleRepository $articleRepository;
 
-    public function __construct(CommentRepository $commentRepository)
+    public function __construct(CommentRepository $commentRepository, ArticleRepository $articleRepository)
     {
         $this->commentRepository = $commentRepository;
+        $this->articleRepository = $articleRepository;
     }
 
     public function __invoke(UuidInterface $articleId): iterable
     {
-        // TODO: Verify if article exists
+        if (!$this->articleRepository->exists($articleId)) {
+            // Throw an exception that can result in a 404
+        }
 
         return $this->commentRepository->findByArticleId($articleId);
     }

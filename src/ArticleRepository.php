@@ -8,4 +8,5 @@ use Ramsey\Uuid\UuidInterface;
 interface ArticleRepository
 {
     public function find(UuidInterface $id): Article;
+    public function exists(UuidInterface $id): bool;
 }
