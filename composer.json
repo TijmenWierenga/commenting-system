@@ -26,6 +26,9 @@
     "autoload-dev": {
         "psr-4": {
             "TijmenWierenga\\Tests\\Commenting\\": "tests/"
-        }
+        },
+        "files": [
+            "tests/Factories/model_factories.php"
+        ]
     }
 }
