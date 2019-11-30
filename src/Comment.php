@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TijmenWierenga\Commenting;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -29,15 +30,8 @@ final class Comment implements Commentable
         DateTimeImmutable $createdAt,
         Commentable $commentable
     ) {
-        if (!in_array($root->resourceType(), static::RESOURCE_TYPES, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Invalid resource type provided for comment (%s). Available types: %s',
-                    $root->resourceType(),
-                    implode(', ', static::RESOURCE_TYPES)
-                )
-            );
-        }
+        $this->validateCommentableType($root);
+        $this->validateCommentableType($commentable);
         
         $this->id = $id;
         $this->content = $content;
@@ -77,5 +71,18 @@ final class Comment implements Commentable
     public function getRoot(): Commentable
     {
         return $this->root;
+    }
+
+    private function validateCommentableType(Commentable $commentable): void
+    {
+        if (!in_array($commentable->resourceType(), static::RESOURCE_TYPES, true)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid resource type provided for comment (%s). Available types: %s',
+                    $commentable->resourceType(),
+                    implode(', ', static::RESOURCE_TYPES)
+                )
+            );
+        }
     }
 }
