@@ -9,4 +9,5 @@ interface Commentable
 {
     public function resourceType(): string;
     public function getId(): UuidInterface;
+    public function getRoot(): Commentable;
 }

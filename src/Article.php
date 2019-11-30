@@ -30,4 +30,9 @@ final class Article implements Commentable
     {
         return $this->id;
     }
+
+    public function getRoot(): Commentable
+    {
+        return $this;
+    }
 }

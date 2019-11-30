@@ -18,20 +18,22 @@ final class Comment implements Commentable
     private string $content;
     private UuidInterface $authorId;
     private DateTimeImmutable $createdAt;
+    private Commentable $root;
     private Commentable $commentable;
 
     private function __construct(
         UuidInterface $id,
         string $content,
         UuidInterface $authorId,
-        Commentable $commentable,
-        DateTimeImmutable $createdAt
+        Commentable $root,
+        DateTimeImmutable $createdAt,
+        Commentable $commentable
     ) {
-        if (!in_array($commentable->resourceType(), static::RESOURCE_TYPES, true)) {
+        if (!in_array($root->resourceType(), static::RESOURCE_TYPES, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Invalid resource type provided for comment (%s). Available types: %s',
-                    $commentable->resourceType(),
+                    $root->resourceType(),
                     implode(', ', static::RESOURCE_TYPES)
                 )
             );
@@ -41,6 +43,7 @@ final class Comment implements Commentable
         $this->content = $content;
         $this->authorId = $authorId;
         $this->createdAt = $createdAt;
+        $this->root = $root;
         $this->commentable = $commentable;
     }
 
@@ -50,8 +53,9 @@ final class Comment implements Commentable
             Uuid::uuid4(),
             $content,
             $authorId,
-            $commentable,
-            new DateTimeImmutable()
+            $commentable->getRoot(),
+            new DateTimeImmutable(),
+            $commentable
         );
     }
 
@@ -68,5 +72,10 @@ final class Comment implements Commentable
     public function belongsTo(): Commentable
     {
         return $this->commentable;
+    }
+
+    public function getRoot(): Commentable
+    {
+        return $this->root;
     }
 }
