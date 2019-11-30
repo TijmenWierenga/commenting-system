@@ -11,10 +11,7 @@ final class Article implements Commentable
     private UuidInterface $id;
     private string $title;
     private string $content;
-    /**
-     * @var UuidInterface
-     */
-    private $authorId;
+    private UuidInterface $authorId;
 
     public function __construct(UuidInterface $id, string $title, string $content, UuidInterface $authorId)
     {
