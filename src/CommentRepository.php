@@ -7,5 +7,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface CommentRepository
 {
+    public function find(UuidInterface $id): Comment;
     public function findByArticleId(UuidInterface $id): iterable;
+    public function save(Comment $comment): void;
 }
