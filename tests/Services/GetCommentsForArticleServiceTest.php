@@ -9,6 +9,7 @@ use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
 use TijmenWierenga\Commenting\Models\Comment;
 use TijmenWierenga\Commenting\Repositories\{ArticleRepositoryInMemory, CommentRepositoryInMemory};
 use TijmenWierenga\Commenting\Services\GetCommentsForArticleService;
+
 use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
 class GetCommentsForArticleServiceTest extends TestCase

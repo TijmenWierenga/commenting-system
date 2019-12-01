@@ -13,6 +13,7 @@ use TijmenWierenga\Commenting\Repositories\{
     CommentRepositoryInMemory,
     UserRepositoryInMemory
 };
+
 use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
 class SaveCommentServiceTest extends TestCase

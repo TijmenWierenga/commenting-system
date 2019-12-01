@@ -18,7 +18,7 @@ class Kernel
 
     public function __construct()
     {
-        $container = (new Container())->delegate(new ReflectionContainer);
+        $container = (new Container())->delegate(new ReflectionContainer());
 
         // Load all services
         require_once dirname(__DIR__) . '/config/services.php';
