@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace TijmenWierenga\Commenting\Actions;
 
 use Ramsey\Uuid\UuidInterface;
+use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
+use TijmenWierenga\Commenting\Models\Article;
 use TijmenWierenga\Commenting\Repositories\ArticleRepository;
 use TijmenWierenga\Commenting\Repositories\CommentRepository;
 
@@ -22,7 +24,7 @@ final class GetCommentsForArticleAction
     public function __invoke(UuidInterface $articleId): iterable
     {
         if (!$this->articleRepository->exists($articleId)) {
-            // Throw an exception that can result in a 404
+            throw new ModelNotFoundException(Article::class, $articleId->toString());
         }
 
         return $this->commentRepository->findByArticleId($articleId);
