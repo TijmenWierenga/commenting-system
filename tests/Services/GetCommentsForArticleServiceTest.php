@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Tests\Commenting\Actions;
+namespace TijmenWierenga\Tests\Commenting\Services;
 
 use PHPUnit\Framework\TestCase;
-use TijmenWierenga\Commenting\Actions\GetCommentsForArticleAction;
 use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
 use TijmenWierenga\Commenting\Models\Comment;
-use TijmenWierenga\Commenting\Repositories\ArticleRepositoryInMemory;
-use TijmenWierenga\Commenting\Repositories\CommentRepositoryInMemory;
-use function TijmenWierenga\Tests\Commenting\Factories\make_article;
-use function TijmenWierenga\Tests\Commenting\Factories\make_user;
+use TijmenWierenga\Commenting\Repositories\{ArticleRepositoryInMemory, CommentRepositoryInMemory};
+use TijmenWierenga\Commenting\Services\GetCommentsForArticleService;
+use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
-class GetCommentsForArticleActionTest extends TestCase
+class GetCommentsForArticleServiceTest extends TestCase
 {
     public function testItReturnsANonFoundExceptionWhenArticleDoesNotExist(): void
     {
@@ -23,9 +21,9 @@ class GetCommentsForArticleActionTest extends TestCase
         $article = make_article('PHP is great!', 'So opiniated!', $author->getId());
         $commentRepository = new CommentRepositoryInMemory();
         $articleRepository = new ArticleRepositoryInMemory(); // No articles in repository
-        $action = new GetCommentsForArticleAction($commentRepository, $articleRepository);
+        $service = new GetCommentsForArticleService($commentRepository, $articleRepository);
 
-        $action($article->getId());
+        $service($article->getId());
     }
 
     public function testItReturnsAllCommentsForAnArticle(): void
@@ -48,8 +46,8 @@ class GetCommentsForArticleActionTest extends TestCase
         $commentRepository = new CommentRepositoryInMemory(...[...$firstArticleComments, ...$secondArticleComments]);
         $articleRepository = new ArticleRepositoryInMemory($firstArticle, $secondArticle);
 
-        $action = new GetCommentsForArticleAction($commentRepository, $articleRepository);
-        $comments = $action($firstArticle->getId());
+        $service = new GetCommentsForArticleService($commentRepository, $articleRepository);
+        $comments = $service($firstArticle->getId());
 
         static::assertEquals($firstArticleComments, $comments);
     }

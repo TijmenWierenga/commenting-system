@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Tests\Commenting\Actions;
+namespace TijmenWierenga\Tests\Commenting\Services;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use TijmenWierenga\Commenting\Actions\SaveCommentAction;
+use TijmenWierenga\Commenting\Services\SaveCommentService;
 use TijmenWierenga\Commenting\Models\Comment;
-use TijmenWierenga\Commenting\Repositories\CommentableRepositoryInMemory;
-use TijmenWierenga\Commenting\Repositories\CommentRepositoryInMemory;
-use TijmenWierenga\Commenting\Repositories\UserRepositoryInMemory;
-use function TijmenWierenga\Tests\Commenting\Factories\make_article;
-use function TijmenWierenga\Tests\Commenting\Factories\make_user;
+use TijmenWierenga\Commenting\Repositories\{
+    CommentableRepositoryInMemory,
+    CommentRepositoryInMemory,
+    UserRepositoryInMemory
+};
+use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
-class SaveCommentActionTest extends TestCase
+class SaveCommentServiceTest extends TestCase
 {
     public function testItCannotSaveACommentIfTheAuthorDoesNotExist(): void
     {
@@ -25,7 +26,7 @@ class SaveCommentActionTest extends TestCase
         $commentableRepository = new CommentableRepositoryInMemory($article);
         $commentRepository = new CommentRepositoryInMemory();
         $userRepository = new UserRepositoryInMemory(); // Author does not exist here
-        $action = new SaveCommentAction($commentableRepository, $commentRepository, $userRepository);
+        $action = new SaveCommentService($commentableRepository, $commentRepository, $userRepository);
 
         $action(
             Comment::RESOURCE_TYPE_ARTICLE,
@@ -44,7 +45,7 @@ class SaveCommentActionTest extends TestCase
         $commentableRepository = new CommentableRepositoryInMemory(); // Article does not exist here
         $commentRepository = new CommentRepositoryInMemory();
         $userRepository = new UserRepositoryInMemory($author);
-        $action = new SaveCommentAction($commentableRepository, $commentRepository, $userRepository);
+        $action = new SaveCommentService($commentableRepository, $commentRepository, $userRepository);
 
         $action(
             Comment::RESOURCE_TYPE_ARTICLE,
@@ -61,7 +62,7 @@ class SaveCommentActionTest extends TestCase
         $commentableRepository = new CommentableRepositoryInMemory($article);
         $commentRepository = new CommentRepositoryInMemory();
         $userRepository = new UserRepositoryInMemory($author);
-        $action = new SaveCommentAction($commentableRepository, $commentRepository, $userRepository);
+        $action = new SaveCommentService($commentableRepository, $commentRepository, $userRepository);
 
         $comment = $action(
             Comment::RESOURCE_TYPE_ARTICLE,

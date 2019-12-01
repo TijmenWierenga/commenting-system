@@ -6,12 +6,9 @@ namespace TijmenWierenga\Tests\Commenting\Models;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
-use TijmenWierenga\Commenting\Models\Comment;
-use TijmenWierenga\Commenting\Models\Commentable;
-use function TijmenWierenga\Tests\Commenting\Factories\make_article;
-use function TijmenWierenga\Tests\Commenting\Factories\make_user;
+use Ramsey\Uuid\{Uuid, UuidInterface};
+use TijmenWierenga\Commenting\Models\{Comment, Commentable};
+use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
 final class CommentTest extends TestCase
 {

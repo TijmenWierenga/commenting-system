@@ -4,49 +4,33 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting\Actions;
 
-use InvalidArgumentException;
-use Ramsey\Uuid\Uuid;
-use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
-use TijmenWierenga\Commenting\Models\Comment;
-use TijmenWierenga\Commenting\Repositories\CommentableRepository;
-use TijmenWierenga\Commenting\Repositories\CommentRepository;
-use TijmenWierenga\Commenting\Repositories\UserRepository;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
+use TijmenWierenga\Commenting\Services\SaveCommentService;
 
-final class SaveCommentAction
+class SaveCommentAction
 {
-    private CommentableRepository $commentableRepository;
-    private CommentRepository $commentRepository;
-    private UserRepository $userRepository;
+    private SaveCommentService $saveCommentService;
 
-    public function __construct(
-        CommentableRepository $commentableRepository,
-        CommentRepository $commentRepository,
-        UserRepository $userRepository
-    ) {
-        $this->commentableRepository = $commentableRepository;
-        $this->commentRepository = $commentRepository;
-        $this->userRepository = $userRepository;
+    public function __construct(SaveCommentService $saveCommentService)
+    {
+        $this->saveCommentService = $saveCommentService;
     }
 
-    public function __invoke(string $resourceType, string $resourceId, string $authorId, string $content): Comment
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        $authorId = Uuid::fromString($authorId);
+        $body = json_decode((string)$request->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $resourceType = $body['resource']['type'];
+        $resourceId = $body['resource']['id'];
+        $authorId = $body['authorId'];
+        $content = $body['content'];
 
-        if (!$this->userRepository->exists($authorId)) {
-            throw new InvalidArgumentException(
-                sprintf('User with ID "%s" does not exist', $authorId->toString())
-            );
-        }
+        $comment = ($this->saveCommentService)($resourceType, $resourceId, $authorId, $content);
 
-        try {
-            $commentable = $this->commentableRepository->find($resourceType, Uuid::fromString($resourceId));
-        } catch (ModelNotFoundException $e) {
-            throw new InvalidArgumentException($e->getMessage(), 1, $e);
-        }
-
-        $comment = Comment::newFor($commentable, $authorId, $content);
-        $this->commentRepository->save($comment);
-
-        return $comment;
+        return new Response(
+            201,
+            ['Content-Type' => 'application/json'],
+            json_encode($comment, JSON_THROW_ON_ERROR, 512)
+        );
     }
 }

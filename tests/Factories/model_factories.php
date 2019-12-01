@@ -6,8 +6,7 @@ namespace TijmenWierenga\Tests\Commenting\Factories;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use TijmenWierenga\Commenting\Models\Article;
-use TijmenWierenga\Commenting\Models\User;
+use TijmenWierenga\Commenting\Models\{Article, User};
 
 function make_user(string $username): User
 {
