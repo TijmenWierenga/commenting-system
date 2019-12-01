@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\{Uuid, UuidInterface};
 use TijmenWierenga\Commenting\Models\{Comment, Commentable};
+
 use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
 final class CommentTest extends TestCase

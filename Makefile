@@ -8,7 +8,10 @@ start: build
 build:
 	DOCKER_BUILDKIT=1 docker build -t tijmenwierenga/commenting-system:latest .
 
-test: phpstan phpunit
+test: phpcs phpstan phpunit
+
+phpcs:
+	$(DOCKER_RUN) vendor/bin/phpcs config public src tests --standard=psr12
 
 phpstan:
 	$(DOCKER_RUN) vendor/bin/phpstan analyze
