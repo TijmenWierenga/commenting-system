@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Commenting;
+namespace TijmenWierenga\Commenting\Models;
 
 use Ramsey\Uuid\UuidInterface;
 
@@ -11,10 +11,7 @@ final class Article implements Commentable
     private UuidInterface $id;
     private string $title;
     private string $content;
-    /**
-     * @var UuidInterface
-     */
-    private $authorId;
+    private UuidInterface $authorId;
 
     public function __construct(UuidInterface $id, string $title, string $content, UuidInterface $authorId)
     {
@@ -32,5 +29,10 @@ final class Article implements Commentable
     public function getId(): UuidInterface
     {
         return $this->id;
+    }
+
+    public function getRoot(): Commentable
+    {
+        return $this;
     }
 }

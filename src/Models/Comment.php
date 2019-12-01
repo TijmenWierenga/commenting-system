@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Commenting;
+namespace TijmenWierenga\Commenting\Models;
 
 use DateTimeImmutable;
+use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -18,29 +19,25 @@ final class Comment implements Commentable
     private string $content;
     private UuidInterface $authorId;
     private DateTimeImmutable $createdAt;
+    private Commentable $root;
     private Commentable $commentable;
 
     private function __construct(
         UuidInterface $id,
         string $content,
         UuidInterface $authorId,
-        Commentable $commentable,
-        DateTimeImmutable $createdAt
+        Commentable $root,
+        DateTimeImmutable $createdAt,
+        Commentable $commentable
     ) {
-        if (!in_array($commentable->resourceType(), static::RESOURCE_TYPES, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Invalid resource type provided for comment (%s). Available types: %s',
-                    $commentable->resourceType(),
-                    implode(', ', static::RESOURCE_TYPES)
-                )
-            );
-        }
+        $this->validateCommentableType($root);
+        $this->validateCommentableType($commentable);
         
         $this->id = $id;
         $this->content = $content;
         $this->authorId = $authorId;
         $this->createdAt = $createdAt;
+        $this->root = $root;
         $this->commentable = $commentable;
     }
 
@@ -50,8 +47,9 @@ final class Comment implements Commentable
             Uuid::uuid4(),
             $content,
             $authorId,
-            $commentable,
-            new DateTimeImmutable()
+            $commentable->getRoot(),
+            new DateTimeImmutable(),
+            $commentable
         );
     }
 
@@ -68,5 +66,23 @@ final class Comment implements Commentable
     public function belongsTo(): Commentable
     {
         return $this->commentable;
+    }
+
+    public function getRoot(): Commentable
+    {
+        return $this->root;
+    }
+
+    private function validateCommentableType(Commentable $commentable): void
+    {
+        if (!in_array($commentable->resourceType(), static::RESOURCE_TYPES, true)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid resource type provided for comment (%s). Available types: %s',
+                    $commentable->resourceType(),
+                    implode(', ', static::RESOURCE_TYPES)
+                )
+            );
+        }
     }
 }

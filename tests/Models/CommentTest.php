@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Tests\Commenting;
+namespace TijmenWierenga\Tests\Commenting\Models;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use TijmenWierenga\Commenting\Comment;
-use TijmenWierenga\Commenting\Commentable;
+use TijmenWierenga\Commenting\Models\Comment;
+use TijmenWierenga\Commenting\Models\Commentable;
 use function TijmenWierenga\Tests\Commenting\Factories\make_article;
 use function TijmenWierenga\Tests\Commenting\Factories\make_user;
 
@@ -23,6 +23,7 @@ final class CommentTest extends TestCase
         $comment = Comment::newFor($article, $user->getId(), 'Great article mate');
 
         static::assertEquals($article, $comment->belongsTo());
+        static::assertEquals($article, $comment->getRoot());
     }
 
     public function testItCreatesACommentForAnotherComment(): void
@@ -35,6 +36,7 @@ final class CommentTest extends TestCase
 
         static::assertEquals($article, $articleComment->belongsTo());
         static::assertEquals($articleComment, $commentOnComment->belongsTo());
+        static::assertEquals($article, $commentOnComment->getRoot());
     }
 
     public function testItCanOnlyCreateACommentForASupportedCommentableEntity(): void
@@ -53,6 +55,11 @@ final class CommentTest extends TestCase
             public function getId(): UuidInterface
             {
                 return Uuid::uuid4();
+            }
+
+            public function getRoot(): Commentable
+            {
+                return $this;
             }
         };
         $user = make_user('tijmen');
