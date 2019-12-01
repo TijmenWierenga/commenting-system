@@ -9,6 +9,10 @@ use TijmenWierenga\Commenting\Models\Comment;
 interface CommentRepository
 {
     public function find(UuidInterface $id): Comment;
+    /**
+     * @param UuidInterface $id
+     * @return iterable|Comment[]
+     */
     public function findByArticleId(UuidInterface $id): iterable;
     public function save(Comment $comment): void;
 }
