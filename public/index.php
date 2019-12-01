@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+use League\Container\Container;
+use League\Route\Strategy\{ApplicationStrategy, StrategyInterface};
 use Ramsey\Uuid\Uuid;
 use GuzzleHttp\Psr7\ServerRequest;
 use League\Route\Router;
 use TijmenWierenga\Commenting\Actions\{GetCommentsForArticleAction, SaveCommentAction};
 use TijmenWierenga\Commenting\Models\{Article, Comment, User};
 use TijmenWierenga\Commenting\Repositories\{
+    ArticleRepository,
     ArticleRepositoryInMemory,
+    CommentableRepository,
     CommentableRepositoryInMemory,
+    CommentRepository,
     CommentRepositoryInMemory,
+    UserRepository,
     UserRepositoryInMemory
 };
-use TijmenWierenga\Commenting\Services\{GetCommentsForArticleService, SaveCommentService};
 use function Http\Response\send;
 
 $authorId = Uuid::fromString('186206f9-1ed6-42cf-ab02-3f4d1226a113');
@@ -32,23 +37,31 @@ $commentRepository = new CommentRepositoryInMemory(...$comments);
 $articleRepository = new ArticleRepositoryInMemory($article);
 $commentableRepository = new CommentableRepositoryInMemory($article, ...$comments);
 $userRepository = new UserRepositoryInMemory($author);
-$getCommentsForArticleService = new GetCommentsForArticleService($commentRepository, $articleRepository);
-$saveCommentService = new SaveCommentService($commentableRepository, $commentRepository, $userRepository);
-
-$getCommentsForArticleAction = new GetCommentsForArticleAction($getCommentsForArticleService);
-$saveCommentAction = new SaveCommentAction($saveCommentService);
 
 $request = ServerRequest::fromGlobals();
 
-$router = new Router();
+$container = new Container();
+
+$container->add(ArticleRepository::class, $articleRepository);
+$container->add(CommentableRepository::class, $commentableRepository);
+$container->add(CommentRepository::class, $commentRepository);
+$container->add(UserRepository::class, $userRepository);
+
+$container->delegate(
+    new League\Container\ReflectionContainer
+);
+/** @var StrategyInterface $strategy */
+$strategy = (new ApplicationStrategy())->setContainer($container);
+/** @var Router $router */
+$router = (new Router())->setStrategy($strategy);
 
 $router->get(
     '/article/{id}/comments',
-    $getCommentsForArticleAction
+    GetCommentsForArticleAction::class
 );
 $router->post(
     '/comment',
-    $saveCommentAction
+    SaveCommentAction::class
 );
 
 $response = $router->dispatch($request);
