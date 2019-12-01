@@ -4,4 +4,4 @@ services:
   app:
     build: .
     volumes:
-    - .:/var/www/html
+    - .:/var/www/html:cached
