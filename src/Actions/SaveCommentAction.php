@@ -6,6 +6,7 @@ namespace TijmenWierenga\Commenting\Actions;
 
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
+use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
 use TijmenWierenga\Commenting\Models\Comment;
 use TijmenWierenga\Commenting\Repositories\CommentableRepository;
 use TijmenWierenga\Commenting\Repositories\CommentRepository;
@@ -37,8 +38,15 @@ final class SaveCommentAction
             );
         }
 
-        $commentable = $this->commentableRepository->find($resourceType, Uuid::fromString($resourceId));
+        try {
+            $commentable = $this->commentableRepository->find($resourceType, Uuid::fromString($resourceId));
+        } catch (ModelNotFoundException $e) {
+            throw new InvalidArgumentException($e->getMessage(), 1, $e);
+        }
+
         $comment = Comment::newFor($commentable, $authorId, $content);
         $this->commentRepository->save($comment);
+
+        return $comment;
     }
 }
