@@ -27,7 +27,7 @@ final class SaveCommentAction
         $this->userRepository = $userRepository;
     }
 
-    public function __invoke(string $resourceType, string $resourceId, string $authorId, string $content): void
+    public function __invoke(string $resourceType, string $resourceId, string $authorId, string $content): Comment
     {
         $authorId = Uuid::fromString($authorId);
 
