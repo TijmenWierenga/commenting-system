@@ -6,10 +6,11 @@ namespace TijmenWierenga\Commenting\Models;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use JsonSerializable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class Comment implements Commentable
+final class Comment implements Commentable, JsonSerializable
 {
     public const RESOURCE_TYPE_ARTICLE = 'article';
     public const RESOURCE_TYPE_COMMENT = 'comment';
@@ -84,5 +85,23 @@ final class Comment implements Commentable
                 )
             );
         }
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId()->toString(),
+            'authorId' => $this->authorId->toString(),
+            'content' => $this->content,
+            'createdAt' => $this->createdAt->format(DATE_ATOM),
+            'root' => [
+                'id' => $this->getRoot()->getId()->toString(),
+                'type' => $this->getRoot()->resourceType(),
+            ],
+            'belongsTo' => [
+                'id' => $this->belongsTo()->getId()->toString(),
+                'type' => $this->belongsTo()->resourceType()
+            ],
+        ];
     }
 }
