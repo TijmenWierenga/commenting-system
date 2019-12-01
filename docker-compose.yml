@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  app:
+    image: tijmenwierenga/commenting-system:latest
+    ports:
+    - 80:80
