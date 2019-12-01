@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Commenting;
+namespace TijmenWierenga\Commenting\Actions;
 
 use Ramsey\Uuid\UuidInterface;
+use TijmenWierenga\Commenting\Repositories\ArticleRepository;
+use TijmenWierenga\Commenting\Repositories\CommentRepository;
 
 final class GetCommentsForArticleAction
 {

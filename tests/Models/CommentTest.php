@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Tests\Commenting;
+namespace TijmenWierenga\Tests\Commenting\Models;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use TijmenWierenga\Commenting\Comment;
-use TijmenWierenga\Commenting\Commentable;
+use TijmenWierenga\Commenting\Models\Comment;
+use TijmenWierenga\Commenting\Models\Commentable;
 use function TijmenWierenga\Tests\Commenting\Factories\make_article;
 use function TijmenWierenga\Tests\Commenting\Factories\make_user;
 

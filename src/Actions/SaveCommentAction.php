@@ -2,10 +2,14 @@
 
 declare(strict_types=1);
 
-namespace TijmenWierenga\Commenting;
+namespace TijmenWierenga\Commenting\Actions;
 
 use InvalidArgumentException;
 use Ramsey\Uuid\Uuid;
+use TijmenWierenga\Commenting\Models\Comment;
+use TijmenWierenga\Commenting\Repositories\CommentableRepository;
+use TijmenWierenga\Commenting\Repositories\CommentRepository;
+use TijmenWierenga\Commenting\Repositories\UserRepository;
 
 final class SaveCommentAction
 {

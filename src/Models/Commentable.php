@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TijmenWierenga\Commenting;
+namespace TijmenWierenga\Commenting\Models;
 
 use Ramsey\Uuid\UuidInterface;
 

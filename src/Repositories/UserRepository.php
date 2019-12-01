@@ -1,12 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
-namespace TijmenWierenga\Commenting;
+namespace TijmenWierenga\Commenting\Repositories;
 
 use Ramsey\Uuid\UuidInterface;
 
-interface ArticleRepository
+interface UserRepository
 {
-    public function find(UuidInterface $id): Article;
     public function exists(UuidInterface $id): bool;
 }
