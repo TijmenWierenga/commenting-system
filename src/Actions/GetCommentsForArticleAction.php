@@ -4,29 +4,33 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting\Actions;
 
-use Ramsey\Uuid\UuidInterface;
-use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
-use TijmenWierenga\Commenting\Models\Article;
-use TijmenWierenga\Commenting\Repositories\ArticleRepository;
-use TijmenWierenga\Commenting\Repositories\CommentRepository;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
+use Ramsey\Uuid\Uuid;
+use TijmenWierenga\Commenting\Services\GetCommentsForArticleService;
 
 final class GetCommentsForArticleAction
 {
-    private CommentRepository $commentRepository;
-    private ArticleRepository $articleRepository;
+    /**
+     * @var GetCommentsForArticleService
+     */
+    private GetCommentsForArticleService $commentService;
 
-    public function __construct(CommentRepository $commentRepository, ArticleRepository $articleRepository)
+    public function __construct(GetCommentsForArticleService $commentService)
     {
-        $this->commentRepository = $commentRepository;
-        $this->articleRepository = $articleRepository;
+        $this->commentService = $commentService;
     }
 
-    public function __invoke(UuidInterface $articleId): iterable
+    public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
     {
-        if (!$this->articleRepository->exists($articleId)) {
-            throw new ModelNotFoundException(Article::class, $articleId->toString());
-        }
+        $articleId = Uuid::fromString($args['id']);
 
-        return $this->commentRepository->findByArticleId($articleId);
+        $comments = ($this->commentService)($articleId);
+
+        return new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            json_encode($comments, JSON_THROW_ON_ERROR, 512)
+        );
     }
 }
