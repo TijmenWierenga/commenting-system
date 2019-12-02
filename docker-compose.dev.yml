@@ -5,3 +5,7 @@ services:
     build: .
     volumes:
     - .:/var/www/html:cached
+
+  mariadb:
+    ports:
+    - 3306:3306
