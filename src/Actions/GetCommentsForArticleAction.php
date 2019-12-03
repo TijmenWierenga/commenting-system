@@ -8,17 +8,17 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Ramsey\Uuid\Uuid;
 use TijmenWierenga\Commenting\Services\GetCommentsForArticleService;
+use TijmenWierenga\Commenting\Transformers\Comments\TreeBuilder;
 
 final class GetCommentsForArticleAction
 {
-    /**
-     * @var GetCommentsForArticleService
-     */
     private GetCommentsForArticleService $commentService;
+    private TreeBuilder $treeBuilder;
 
-    public function __construct(GetCommentsForArticleService $commentService)
+    public function __construct(GetCommentsForArticleService $commentService, TreeBuilder $treeBuilder)
     {
         $this->commentService = $commentService;
+        $this->treeBuilder = $treeBuilder;
     }
 
     public function __invoke(ServerRequestInterface $request, array $args): ResponseInterface
@@ -26,11 +26,12 @@ final class GetCommentsForArticleAction
         $articleId = Uuid::fromString($args['id']);
 
         $comments = ($this->commentService)($articleId);
+        $tree = $this->treeBuilder->transform(...$comments);
 
         return new Response(
             200,
             ['Content-Type' => 'application/json'],
-            json_encode($comments, JSON_THROW_ON_ERROR, 512)
+            json_encode($tree, JSON_THROW_ON_ERROR, 512)
         );
     }
 }
