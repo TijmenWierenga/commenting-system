@@ -7,7 +7,7 @@ namespace TijmenWierenga\Tests\Commenting\Models;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\{Uuid, UuidInterface};
-use TijmenWierenga\Commenting\Models\{Comment, Commentable};
+use TijmenWierenga\Commenting\Models\{Comment, Commentable, CommentableId};
 
 use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
@@ -20,8 +20,22 @@ final class CommentTest extends TestCase
 
         $comment = Comment::newFor($article, $user->getId(), 'Great article mate');
 
-        static::assertEquals($article, $comment->belongsTo());
-        static::assertEquals($article, $comment->getRoot());
+        static::assertEquals(
+            $article->getId()->toString(),
+            $comment->getRootId()->getUuid()->toString()
+        );
+        static::assertEquals(
+            $article->getId()->getResourceType(),
+            $comment->getRootId()->getResourceType()
+        );
+        static::assertEquals(
+            $article->getId()->toString(),
+            $comment->belongsToId()->getUuid()->toString()
+        );
+        static::assertEquals(
+            $article->getId()->getResourceType(),
+            $comment->getRootId()->getResourceType()
+        );
     }
 
     public function testItCreatesACommentForAnotherComment(): void
@@ -32,9 +46,18 @@ final class CommentTest extends TestCase
         $articleComment = Comment::newFor($article, $user->getId(), 'Great article mate');
         $commentOnComment = Comment::newFor($articleComment, $user->getId(), 'Great article mate');
 
-        static::assertEquals($article, $articleComment->belongsTo());
-        static::assertEquals($articleComment, $commentOnComment->belongsTo());
-        static::assertEquals($article, $commentOnComment->getRoot());
+        static::assertEquals(
+            $article->getId()->toString(),
+            $articleComment->belongsToId()->getUuid()->toString()
+        );
+        static::assertEquals(
+            $articleComment->getId()->toString(),
+            $commentOnComment->belongsToId()->getUuid()->toString()
+        );
+        static::assertEquals(
+            $article->getId()->toString(),
+            $commentOnComment->getRootId()->getUuid()->toString()
+        );
     }
 
     public function testItCanOnlyCreateACommentForASupportedCommentableEntity(): void
@@ -45,19 +68,15 @@ final class CommentTest extends TestCase
         );
 
         $nonCommentable = new class implements Commentable {
-            public function resourceType(): string
+
+            public function getId(): CommentableId
             {
-                return 'invalid-resource';
+                return CommentableId::new('invalid-resource');
             }
 
-            public function getId(): UuidInterface
+            public function getRootId(): CommentableId
             {
-                return Uuid::uuid4();
-            }
-
-            public function getRoot(): Commentable
-            {
-                return $this;
+                return $this->getId();
             }
         };
         $user = make_user('tijmen');

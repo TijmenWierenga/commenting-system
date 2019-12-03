@@ -6,7 +6,7 @@ namespace TijmenWierenga\Tests\Commenting\Factories;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use TijmenWierenga\Commenting\Models\{Article, User};
+use TijmenWierenga\Commenting\Models\{Article, CommentableId, User};
 
 function make_user(string $username): User
 {
@@ -16,7 +16,7 @@ function make_user(string $username): User
 function make_article(string $title, string $content, UuidInterface $authorId): Article
 {
     return new Article(
-        Uuid::uuid4(),
+        CommentableId::new('article'),
         $title,
         $content,
         $authorId

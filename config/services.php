@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
-use TijmenWierenga\Commenting\Models\{Article, Comment, User};
+use TijmenWierenga\Commenting\Models\{Article, Comment, CommentableId, User};
 use TijmenWierenga\Commenting\Repositories\{
     ArticleRepository,
     ArticleRepositoryInMemory,
@@ -12,16 +12,20 @@ use TijmenWierenga\Commenting\Repositories\{
     CommentableRepositoryInMemory,
     CommentRepository,
     CommentRepositoryInMemory,
+    CommentRepositorySql,
     UserRepository,
-    UserRepositoryInMemory
-};
+    UserRepositoryInMemory};
 
 /** @var ContainerInterface $container */
 
 $authorId = Uuid::fromString('186206f9-1ed6-42cf-ab02-3f4d1226a113');
 $author = new User($authorId, 'tijmen');
-$articleId = Uuid::fromString('780fdc7e-adeb-4cf5-9521-e53c52557a6d');
-$article = new Article($articleId, 'My first article', 'This is some content', $author->getId());
+$article = new Article(
+    CommentableId::fromScalar('article', '780fdc7e-adeb-4cf5-9521-e53c52557a6d'),
+    'My first article',
+    'This is some content',
+    $author->getId()
+);
 $comments = [
     $comment = Comment::newFor($article, $authorId, 'I like it'),
     Comment::newFor($article, $authorId, 'Awesome'),

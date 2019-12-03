@@ -72,6 +72,6 @@ class SaveCommentServiceTest extends TestCase
             'I really like this article'
         );
 
-        static::assertEquals($comment, $commentRepository->find($comment->getId()));
+        static::assertEquals($comment, $commentRepository->find($comment->getId()->getUuid()));
     }
 }

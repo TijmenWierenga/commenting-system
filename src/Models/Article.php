@@ -8,12 +8,12 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Article implements Commentable
 {
-    private UuidInterface $id;
+    private CommentableId $id;
     private string $title;
     private string $content;
     private UuidInterface $authorId;
 
-    public function __construct(UuidInterface $id, string $title, string $content, UuidInterface $authorId)
+    public function __construct(CommentableId $id, string $title, string $content, UuidInterface $authorId)
     {
         $this->id = $id;
         $this->title = $title;
@@ -26,13 +26,13 @@ final class Article implements Commentable
         return 'article';
     }
 
-    public function getId(): UuidInterface
+    public function getId(): CommentableId
     {
         return $this->id;
     }
 
-    public function getRoot(): Commentable
+    public function getRootId(): CommentableId
     {
-        return $this;
+        return $this->getId();
     }
 }

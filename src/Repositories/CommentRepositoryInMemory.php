@@ -35,8 +35,8 @@ class CommentRepositoryInMemory implements CommentRepository
     {
         return $this->filterBy(
             fn (Comment $comment): bool =>
-            $comment->getRoot()->resourceType() === 'article'
-                && $comment->getRoot()->getId()->toString() === $id->toString()
+            $comment->getRootId()->getResourceType() === 'article'
+            && $comment->getRootId()->toString() === $id->toString()
         );
     }
 

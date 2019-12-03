@@ -24,7 +24,7 @@ class GetCommentsForArticleServiceTest extends TestCase
         $articleRepository = new ArticleRepositoryInMemory(); // No articles in repository
         $service = new GetCommentsForArticleService($commentRepository, $articleRepository);
 
-        $service($article->getId());
+        $service($article->getId()->getUuid());
     }
 
     public function testItReturnsAllCommentsForAnArticle(): void
@@ -48,7 +48,7 @@ class GetCommentsForArticleServiceTest extends TestCase
         $articleRepository = new ArticleRepositoryInMemory($firstArticle, $secondArticle);
 
         $service = new GetCommentsForArticleService($commentRepository, $articleRepository);
-        $comments = $service($firstArticle->getId());
+        $comments = $service($firstArticle->getId()->getUuid());
 
         static::assertEquals($firstArticleComments, $comments);
     }
