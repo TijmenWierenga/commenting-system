@@ -53,12 +53,17 @@ final class Comment implements Commentable, JsonSerializable
             new DateTimeImmutable(),
         );
     }
-        );
-    }
 
-    public function resourceType(): string
+    public static function fromScalar(array $data): self
     {
-        return 'comment';
+        return new self(
+            CommentableId::fromScalar('comment', $data['uuid']),
+            $data['content'],
+            Uuid::fromString($data['author_id']),
+            CommentableId::fromScalar($data['root_type'], $data['root_id']),
+            CommentableId::fromScalar($data['commentable_type'], $data['commentable_id']),
+            new DateTimeImmutable($data['created_at'])
+        );
     }
 
     public function getId(): CommentableId
