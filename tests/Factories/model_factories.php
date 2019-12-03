@@ -10,7 +10,7 @@ use TijmenWierenga\Commenting\Models\{Article, CommentableId, User};
 
 function make_user(string $username): User
 {
-    return new User(Uuid::uuid4(), $username);
+    return new User(Uuid::uuid4(), $username, 'fixed-api-token');
 }
 
 function make_article(string $title, string $content, UuidInterface $authorId): Article
