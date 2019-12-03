@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y \
         libzip-dev
 
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install zip pdo_mysql
 
 # Copy the composer binary to the container
 COPY --from=composer /usr/bin/composer /usr/bin/composer
