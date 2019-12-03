@@ -28,12 +28,12 @@ final class TreeBuilder
 
     private function createComment(Comment $comment): array
     {
-        $comments = array_filter(
+        $childComments = array_filter(
             $this->comments,
             fn (Comment $item): bool => $comment->getId()->toString() === $item->getBelongsToId()->toString()
         );
 
-        $comments = array_values(array_map([$this, 'createComment'], $comments));
+        $comments = array_values(array_map([$this, 'createComment'], $childComments));
 
         return [
             'uuid' => $comment->getId()->toString(),
