@@ -15,7 +15,7 @@ final class Argon2IdHasher implements Hasher
 
     public function hash(string $input): string
     {
-        return password_hash($input, PASSWORD_ARGON2ID, [
+        return (string) password_hash($input, PASSWORD_ARGON2ID, [
             'time_cost' => $this->timeCost
         ]);
     }
