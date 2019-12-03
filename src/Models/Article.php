@@ -21,11 +21,6 @@ final class Article implements Commentable
         $this->authorId = $authorId;
     }
 
-    public function resourceType(): string
-    {
-        return 'article';
-    }
-
     public function getId(): CommentableId
     {
         return $this->id;
