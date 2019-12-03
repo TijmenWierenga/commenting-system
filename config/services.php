@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Psr\Container\ContainerInterface;
+use League\Container\Container;
 use Ramsey\Uuid\Uuid;
 use TijmenWierenga\Commenting\Models\{Article, Comment, CommentableId, User};
 use TijmenWierenga\Commenting\Repositories\{
@@ -16,7 +16,7 @@ use TijmenWierenga\Commenting\Repositories\{
     UserRepository,
     UserRepositoryInMemory};
 
-/** @var ContainerInterface $container */
+/** @var Container $container */
 
 $authorId = Uuid::fromString('186206f9-1ed6-42cf-ab02-3f4d1226a113');
 $author = new User($authorId, 'tijmen');
