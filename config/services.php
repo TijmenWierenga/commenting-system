@@ -14,6 +14,7 @@ use TijmenWierenga\Commenting\Repositories\{
     UserRepository,
     UserRepositorySql
 };
+use TijmenWierenga\Commenting\Hashing\{Argon2IdHasher, Hasher};
 
 /** @var Container $container */
 
@@ -36,3 +37,4 @@ $container->add(CommentableRepositoryProxied::class)->addArgument([
     CommentableId::RESOURCE_TYPE_COMMENT => $container->get(CommentRepository::class)
 ]);
 $container->add(CommentableRepository::class, $container->get(CommentableRepositoryProxied::class));
+$container->add(Hasher::class, Argon2IdHasher::class);
