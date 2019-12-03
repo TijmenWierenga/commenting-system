@@ -16,6 +16,7 @@ use TijmenWierenga\Commenting\Repositories\{
 };
 use TijmenWierenga\Commenting\Authentication\AuthManager;
 use TijmenWierenga\Commenting\Hashing\{Argon2IdHasher, Hasher};
+use TijmenWierenga\Commenting\Middleware\AuthenticationMiddleware;
 
 /** @var Container $container */
 
@@ -44,3 +45,6 @@ $container->add(AuthManager::class)
     ->addArgument(Hasher::class)
     ->setShared(true);
 $container->add(Hasher::class, Argon2IdHasher::class);
+
+// MIDDLEWARE
+$container->get(AuthenticationMiddleware::class);
