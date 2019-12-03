@@ -6,13 +6,13 @@ namespace TijmenWierenga\Tests\Commenting\Services;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use TijmenWierenga\Commenting\Services\SaveCommentService;
-use TijmenWierenga\Commenting\Models\Comment;
+use TijmenWierenga\Commenting\Models\CommentableId;
 use TijmenWierenga\Commenting\Repositories\{
     CommentableRepositoryInMemory,
     CommentRepositoryInMemory,
     UserRepositoryInMemory
 };
+use TijmenWierenga\Commenting\Services\SaveCommentService;
 
 use function TijmenWierenga\Tests\Commenting\Factories\{make_article, make_user};
 
@@ -30,7 +30,7 @@ class SaveCommentServiceTest extends TestCase
         $action = new SaveCommentService($commentableRepository, $commentRepository, $userRepository);
 
         $action(
-            Comment::RESOURCE_TYPE_ARTICLE,
+            CommentableId::RESOURCE_TYPE_ARTICLE,
             $article->getId()->toString(),
             $author->getId()->toString(),
             'I really like this article'
@@ -49,7 +49,7 @@ class SaveCommentServiceTest extends TestCase
         $action = new SaveCommentService($commentableRepository, $commentRepository, $userRepository);
 
         $action(
-            Comment::RESOURCE_TYPE_ARTICLE,
+            CommentableId::RESOURCE_TYPE_ARTICLE,
             $article->getId()->toString(),
             $author->getId()->toString(),
             'I really like this article'
@@ -66,7 +66,7 @@ class SaveCommentServiceTest extends TestCase
         $action = new SaveCommentService($commentableRepository, $commentRepository, $userRepository);
 
         $comment = $action(
-            Comment::RESOURCE_TYPE_ARTICLE,
+            CommentableId::RESOURCE_TYPE_ARTICLE,
             $article->getId()->toString(),
             $author->getId()->toString(),
             'I really like this article'

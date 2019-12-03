@@ -12,10 +12,6 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Comment implements Commentable, JsonSerializable
 {
-    public const RESOURCE_TYPE_ARTICLE = 'article';
-    public const RESOURCE_TYPE_COMMENT = 'comment';
-    public const RESOURCE_TYPES = [self::RESOURCE_TYPE_ARTICLE, self::RESOURCE_TYPE_COMMENT];
-
     private CommentableId $id;
     private string $content;
     private UuidInterface $authorId;
@@ -31,9 +27,6 @@ final class Comment implements Commentable, JsonSerializable
         CommentableId $commentableId,
         DateTimeImmutable $createdAt
     ) {
-        $this->validateCommentableType($rootId);
-        $this->validateCommentableType($commentableId);
-        
         $this->id = $id;
         $this->content = $content;
         $this->authorId = $authorId;
@@ -95,19 +88,6 @@ final class Comment implements Commentable, JsonSerializable
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    private function validateCommentableType(CommentableId $commentableId): void
-    {
-        if (!in_array($commentableId->getResourceType(), static::RESOURCE_TYPES, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid resource type provided for comment (%s). Available types: %s',
-                    $commentableId->getResourceType(),
-                    implode(', ', static::RESOURCE_TYPES)
-                )
-            );
-        }
     }
 
     public function jsonSerialize(): array
