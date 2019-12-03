@@ -15,7 +15,7 @@ class CommentableRepositoryInMemory implements CommentableRepository
     public function __construct(Commentable ...$commentables)
     {
         foreach ($commentables as $commentable) {
-            $this->collection[$commentable->resourceType()][] = $commentable;
+            $this->collection[$commentable->getId()->getResourceType()][] = $commentable;
         }
     }
 

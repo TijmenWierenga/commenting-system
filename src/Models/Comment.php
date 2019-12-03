@@ -12,79 +12,82 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Comment implements Commentable, JsonSerializable
 {
-    public const RESOURCE_TYPE_ARTICLE = 'article';
-    public const RESOURCE_TYPE_COMMENT = 'comment';
-    public const RESOURCE_TYPES = [self::RESOURCE_TYPE_ARTICLE, self::RESOURCE_TYPE_COMMENT];
-
-    private UuidInterface $id;
+    private CommentableId $id;
     private string $content;
     private UuidInterface $authorId;
     private DateTimeImmutable $createdAt;
-    private Commentable $root;
-    private Commentable $commentable;
+    private CommentableId $rootId;
+    private CommentableId $commentableId;
 
     private function __construct(
-        UuidInterface $id,
+        CommentableId $id,
         string $content,
         UuidInterface $authorId,
-        Commentable $root,
-        DateTimeImmutable $createdAt,
-        Commentable $commentable
+        CommentableId $rootId,
+        CommentableId $commentableId,
+        DateTimeImmutable $createdAt
     ) {
-        $this->validateCommentableType($root);
-        $this->validateCommentableType($commentable);
-        
         $this->id = $id;
         $this->content = $content;
         $this->authorId = $authorId;
         $this->createdAt = $createdAt;
-        $this->root = $root;
-        $this->commentable = $commentable;
+        $this->rootId = $rootId;
+        $this->commentableId = $commentableId;
     }
 
     public static function newFor(Commentable $commentable, UuidInterface $authorId, string $content): self
     {
         return new self(
-            Uuid::uuid4(),
+            CommentableId::new('comment'),
             $content,
             $authorId,
-            $commentable->getRoot(),
+            $commentable->getRootId(),
+            $commentable->getId(),
             new DateTimeImmutable(),
-            $commentable
         );
     }
 
-    public function resourceType(): string
+    public static function fromScalar(array $data): self
     {
-        return 'comment';
+        return new self(
+            CommentableId::fromScalar('comment', $data['uuid']),
+            $data['content'],
+            Uuid::fromString($data['author_id']),
+            CommentableId::fromScalar($data['root_type'], $data['root_id']),
+            CommentableId::fromScalar($data['commentable_type'], $data['commentable_id']),
+            new DateTimeImmutable($data['created_at'])
+        );
     }
 
-    public function getId(): UuidInterface
+    public function getId(): CommentableId
     {
         return $this->id;
     }
 
-    public function belongsTo(): Commentable
+    public function getBelongsToId(): CommentableId
     {
-        return $this->commentable;
+        return $this->commentableId;
     }
 
-    public function getRoot(): Commentable
+
+    public function getRootId(): CommentableId
     {
-        return $this->root;
+        return $this->rootId;
     }
 
-    private function validateCommentableType(Commentable $commentable): void
+    public function getAuthorId(): UuidInterface
     {
-        if (!in_array($commentable->resourceType(), static::RESOURCE_TYPES, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid resource type provided for comment (%s). Available types: %s',
-                    $commentable->resourceType(),
-                    implode(', ', static::RESOURCE_TYPES)
-                )
-            );
-        }
+        return $this->authorId;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    public function getCreatedAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function jsonSerialize(): array
@@ -95,12 +98,12 @@ final class Comment implements Commentable, JsonSerializable
             'content' => $this->content,
             'createdAt' => $this->createdAt->format(DATE_ATOM),
             'root' => [
-                'id' => $this->getRoot()->getId()->toString(),
-                'type' => $this->getRoot()->resourceType(),
+                'id' => $this->getRootId()->toString(),
+                'type' => $this->getRootId()->getResourceType(),
             ],
             'belongsTo' => [
-                'id' => $this->belongsTo()->getId()->toString(),
-                'type' => $this->belongsTo()->resourceType()
+                'id' => $this->getBelongsToId()->toString(),
+                'type' => $this->getBelongsToId()->getResourceType()
             ],
         ];
     }

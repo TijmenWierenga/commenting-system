@@ -5,6 +5,10 @@ services:
     image: tijmenwierenga/commenting-system:latest
     ports:
     - 80:80
+    environment:
+      MYSQL_DSN: mysql:host=mariadb;dbname=api
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: demo
 
   mariadb:
     image: mariadb:10.4
