@@ -7,6 +7,7 @@ namespace TijmenWierenga\Commenting\Repositories;
 use PDO;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
 use TijmenWierenga\Commenting\Models\Article;
 use TijmenWierenga\Commenting\Models\CommentableId;
 
@@ -26,6 +27,10 @@ final class ArticleRepositorySql implements ArticleRepository
             'uuid' => $id->toString()
         ]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($data === false) {
+            throw new ModelNotFoundException(Article::class, $id->toString());
+        }
 
         return new Article(
             CommentableId::fromScalar(CommentableId::RESOURCE_TYPE_ARTICLE, $data['uuid']),

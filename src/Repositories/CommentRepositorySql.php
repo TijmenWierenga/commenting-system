@@ -6,6 +6,8 @@ namespace TijmenWierenga\Commenting\Repositories;
 
 use PDO;
 use Ramsey\Uuid\UuidInterface;
+use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
+use TijmenWierenga\Commenting\Models\Article;
 use TijmenWierenga\Commenting\Models\Comment;
 
 final class CommentRepositorySql implements CommentRepository
@@ -24,6 +26,10 @@ final class CommentRepositorySql implements CommentRepository
             'id' => $id->toString()
         ]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($data === false) {
+            throw new ModelNotFoundException(Comment::class, $id->toString());
+        }
 
         return Comment::fromScalar($data);
     }
