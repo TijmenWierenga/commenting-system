@@ -34,7 +34,10 @@ class UserRepositoryInMemory implements UserRepository
 
     public function find(UuidInterface $uuid): User
     {
-        $results = array_filter($this->users, fn (User $user): bool => $user->getId()->toString() === $uuid->toString());
+        $results = array_filter(
+            $this->users,
+            fn (User $user): bool => $user->getId()->toString() === $uuid->toString()
+        );
 
         if (!count($results)) {
             throw new ModelNotFoundException(User::class, $uuid->toString());

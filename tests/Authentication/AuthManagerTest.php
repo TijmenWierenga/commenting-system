@@ -10,6 +10,7 @@ use TijmenWierenga\Commenting\Authentication\AuthManager;
 use TijmenWierenga\Commenting\Exceptions\AuthenticationException;
 use TijmenWierenga\Commenting\Hashing\PlainTextHasher;
 use TijmenWierenga\Commenting\Repositories\UserRepositoryInMemory;
+
 use function TijmenWierenga\Tests\Commenting\Factories\make_user;
 
 final class AuthManagerTest extends TestCase
