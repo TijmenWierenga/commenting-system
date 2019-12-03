@@ -33,6 +33,13 @@ $articleRepository = new ArticleRepositoryInMemory($article);
 $commentableRepository = new CommentableRepositoryInMemory($article, ...$comments);
 $userRepository = new UserRepositoryInMemory($author);
 
+$container->add('pdo')
+    ->addArgument($_ENV['MYSQL_DSN'])
+    ->addArgument($_ENV['MYSQL_USERNAME'])
+    ->addArgument($_ENV['MYSQL_PASSWORD'])
+    ->addMethodCall('setAttribute', [PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION])
+    ->setShared(true);
+
 $container->add(ArticleRepository::class, $articleRepository);
 $container->add(CommentableRepository::class, $commentableRepository);
 $container->add(CommentRepository::class, $commentRepository);
