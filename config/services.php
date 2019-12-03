@@ -3,23 +3,19 @@
 declare(strict_types=1);
 
 use League\Container\Container;
-use Ramsey\Uuid\Uuid;
-use TijmenWierenga\Commenting\Models\{CommentableId, User};
-use TijmenWierenga\Commenting\Repositories\{ArticleRepository,
+use TijmenWierenga\Commenting\Models\{CommentableId};
+use TijmenWierenga\Commenting\Repositories\{
+    ArticleRepository,
     ArticleRepositorySql,
     CommentableRepository,
     CommentableRepositoryProxied,
     CommentRepository,
     CommentRepositorySql,
     UserRepository,
-    UserRepositoryInMemory};
+    UserRepositorySql
+};
 
 /** @var Container $container */
-
-$authorId = Uuid::fromString('186206f9-1ed6-42cf-ab02-3f4d1226a113');
-$author = new User($authorId, 'tijmen');
-
-$userRepository = new UserRepositoryInMemory($author);
 
 $container->add(PDO::class)
     ->addArgument($_ENV['MYSQL_DSN'])
@@ -30,9 +26,11 @@ $container->add(PDO::class)
 
 $container->add(CommentRepositorySql::class)->addArgument(PDO::class);
 $container->add(ArticleRepositorySql::class)->addArgument(PDO::class);
+$container->add(UserRepositorySql::class)->addArgument(PDO::class);
 $container->add(ArticleRepository::class, $container->get(ArticleRepositorySql::class));
 $container->add(CommentRepository::class, $container->get(CommentRepositorySql::class));
-$container->add(UserRepository::class, $userRepository);
+$container->add(UserRepository::class, $container->get(UserRepositorySql::class));
+
 $container->add(CommentableRepositoryProxied::class)->addArgument([
     CommentableId::RESOURCE_TYPE_ARTICLE => $container->get(ArticleRepository::class),
     CommentableId::RESOURCE_TYPE_COMMENT => $container->get(CommentRepository::class)
