@@ -7,14 +7,14 @@ use Ramsey\Uuid\Uuid;
 use TijmenWierenga\Commenting\Models\{Article, Comment, CommentableId, User};
 use TijmenWierenga\Commenting\Repositories\{
     ArticleRepository,
-    ArticleRepositoryInMemory,
+    ArticleRepositorySql,
     CommentableRepository,
     CommentableRepositoryInMemory,
     CommentRepository,
-    CommentRepositoryInMemory,
     CommentRepositorySql,
     UserRepository,
-    UserRepositoryInMemory};
+    UserRepositoryInMemory
+};
 
 /** @var Container $container */
 
@@ -32,8 +32,6 @@ $comments = [
     Comment::newFor($article, $authorId, 'This sucks'),
     Comment::newFor($comment, $authorId, 'I like that you like it!')
 ];
-$commentRepository = new CommentRepositoryInMemory(...$comments);
-$articleRepository = new ArticleRepositoryInMemory($article);
 $commentableRepository = new CommentableRepositoryInMemory($article, ...$comments);
 $userRepository = new UserRepositoryInMemory($author);
 
@@ -45,7 +43,8 @@ $container->add(PDO::class)
     ->setShared(true);
 
 $container->add(CommentRepositorySql::class)->addArgument(PDO::class);
-$container->add(ArticleRepository::class, $articleRepository);
+$container->add(ArticleRepositorySql::class)->addArgument(PDO::class);
+$container->add(ArticleRepository::class, $container->get(ArticleRepositorySql::class));
 $container->add(CommentableRepository::class, $commentableRepository);
 $container->add(CommentRepository::class, $container->get(CommentRepositorySql::class));
 $container->add(UserRepository::class, $userRepository);
