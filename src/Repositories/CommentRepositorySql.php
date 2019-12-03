@@ -78,10 +78,10 @@ final class CommentRepositorySql implements CommentRepository
             'authorId' => $comment->getAuthorId()->toString(),
             'content' => $comment->getContent(),
             'createdAt' => $comment->getCreatedAt()->format('Y-m-d H:i'),
-            'commentableType' => $comment->belongsToId()->getResourceType(),
-            'commentableId' => $comment->belongsToId()->getUuid()->toString(),
+            'commentableType' => $comment->getBelongsToId()->getResourceType(),
+            'commentableId' => $comment->getBelongsToId()->toString(),
             'rootType' => $comment->getRootId()->getResourceType(),
-            'rootId' => $comment->getRootId()->getUuid()->toString()
+            'rootId' => $comment->getRootId()->toString()
         ]);
     }
 }

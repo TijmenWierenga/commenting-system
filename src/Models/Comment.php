@@ -64,7 +64,7 @@ final class Comment implements Commentable, JsonSerializable
         return $this->id;
     }
 
-    public function belongsToId(): CommentableId
+    public function getBelongsToId(): CommentableId
     {
         return $this->commentableId;
     }
@@ -98,12 +98,12 @@ final class Comment implements Commentable, JsonSerializable
             'content' => $this->content,
             'createdAt' => $this->createdAt->format(DATE_ATOM),
             'root' => [
-                'id' => $this->getRootId()->getUuid()->toString(),
+                'id' => $this->getRootId()->toString(),
                 'type' => $this->getRootId()->getResourceType(),
             ],
             'belongsTo' => [
-                'id' => $this->belongsToId()->getUuid()->toString(),
-                'type' => $this->belongsToId()->getResourceType()
+                'id' => $this->getBelongsToId()->toString(),
+                'type' => $this->getBelongsToId()->getResourceType()
             ],
         ];
     }

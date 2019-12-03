@@ -22,7 +22,7 @@ final class CommentTest extends TestCase
 
         static::assertEquals(
             $article->getId()->toString(),
-            $comment->getRootId()->getUuid()->toString()
+            $comment->getRootId()->toString()
         );
         static::assertEquals(
             $article->getId()->getResourceType(),
@@ -30,7 +30,7 @@ final class CommentTest extends TestCase
         );
         static::assertEquals(
             $article->getId()->toString(),
-            $comment->belongsToId()->getUuid()->toString()
+            $comment->getBelongsToId()->toString()
         );
         static::assertEquals(
             $article->getId()->getResourceType(),
@@ -48,15 +48,15 @@ final class CommentTest extends TestCase
 
         static::assertEquals(
             $article->getId()->toString(),
-            $articleComment->belongsToId()->getUuid()->toString()
+            $articleComment->getBelongsToId()->toString()
         );
         static::assertEquals(
             $articleComment->getId()->toString(),
-            $commentOnComment->belongsToId()->getUuid()->toString()
+            $commentOnComment->getBelongsToId()->toString()
         );
         static::assertEquals(
             $article->getId()->toString(),
-            $commentOnComment->getRootId()->getUuid()->toString()
+            $commentOnComment->getRootId()->toString()
         );
     }
 
