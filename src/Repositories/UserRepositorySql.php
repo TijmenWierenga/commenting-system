@@ -47,6 +47,28 @@ final class UserRepositorySql implements UserRepository
         return new User(
             Uuid::fromString($data['uuid']),
             $data['username'],
+            $data['password'],
+            $data['api_token']
+        );
+    }
+
+    public function findByUsername(string $username): User
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `users` WHERE `username` = :username');
+        $statement->execute([
+            'username' => $username
+        ]);
+
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($data === false) {
+            throw new ModelNotFoundException(User::class, $username);
+        }
+
+        return new User(
+            Uuid::fromString($data['uuid']),
+            $data['username'],
+            $data['password'],
             $data['api_token']
         );
     }
