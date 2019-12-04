@@ -43,6 +43,7 @@ $container->add(CommentableRepository::class, $container->get(CommentableReposit
 $container->add(AuthManager::class)
     ->addArgument(UserRepository::class)
     ->addArgument(Hasher::class)
+    ->addArgument($_ENV['SECRET_KEY'])
     ->setShared(true);
 $container->add(Hasher::class, Argon2IdHasher::class);
 

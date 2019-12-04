@@ -9,6 +9,7 @@ services:
       MYSQL_DSN: mysql:host=mariadb;dbname=api
       MYSQL_USERNAME: root
       MYSQL_PASSWORD: demo
+      SECRET_KEY: 6d910f987a5b31c874d780d5aa07249b3b5203aad5b6844f611c92ea200f7791
 
   mariadb:
     image: mariadb:10.4

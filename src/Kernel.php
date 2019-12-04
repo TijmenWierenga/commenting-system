@@ -12,7 +12,6 @@ use League\Route\Strategy\StrategyInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TijmenWierenga\Commenting\Middleware\AuthenticationMiddleware;
 
 class Kernel
 {
@@ -45,8 +44,6 @@ class Kernel
 
     private function registerGlobalMiddleware(Router $router, ContainerInterface $container): Router
     {
-        $router->middleware($container->get(AuthenticationMiddleware::class));
-
         return $router;
     }
 }
