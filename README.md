@@ -20,3 +20,5 @@ Verify that the stack has started successfully by requesting all comments for an
 ```bash
 curl http://localhost/article/780fdc7e-adeb-4cf5-9521-e53c52557a6d/comments
 ```
+
+Further documentation is available through the [ReDoc API documentation](http://localhost:8080).
