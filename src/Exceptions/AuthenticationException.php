@@ -13,14 +13,18 @@ final class AuthenticationException extends RuntimeException
     {
         return new self(sprintf(
             'No credentials provided. 
-            Please supply a "%s" header with a user UUID and a "%s" header with an API token',
-            AuthManager::CLIENT_HEADER,
+            Please supply an "%s" header with a valid access token',
             AuthManager::TOKEN_HEADER
         ));
     }
 
     public static function invalidCredentials(): self
     {
-        return new self('Invalid API Token');
+        return new self('Invalid credentials');
+    }
+
+    public static function invalidToken(): self
+    {
+        return new self('Invalid access token');
     }
 }

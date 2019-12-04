@@ -4,49 +4,80 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting\Authentication;
 
+use Lcobucci\JWT\{Builder, Parser, Token, ValidationData};
+use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use TijmenWierenga\Commenting\Exceptions\AuthenticationException;
-use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
+use TijmenWierenga\Commenting\Exceptions\{AuthenticationException, ModelNotFoundException};
 use TijmenWierenga\Commenting\Hashing\Hasher;
 use TijmenWierenga\Commenting\Models\User;
 use TijmenWierenga\Commenting\Repositories\UserRepository;
 
 final class AuthManager
 {
-    public const TOKEN_HEADER = 'X-Api-Token';
-    public const CLIENT_HEADER = 'X-Client-Id';
+    public const TOKEN_HEADER = 'Authorization';
 
     private UserRepository $userRepository;
     private User $authenticatedUser;
     private Hasher $hasher;
+    private string $secretKey;
+    private Sha256 $signer;
 
-    public function __construct(UserRepository $userRepository, Hasher $hasher)
+    public function __construct(UserRepository $userRepository, Hasher $hasher, string $secretKey)
     {
         $this->userRepository = $userRepository;
         $this->hasher = $hasher;
+        $this->signer = new Sha256();
+        $this->secretKey = $secretKey;
     }
 
     public function authenticate(ServerRequestInterface $request): void
     {
-        if (!$request->hasHeader(static::TOKEN_HEADER) || !$request->hasHeader(static::CLIENT_HEADER)) {
+        if (!$request->hasHeader(static::TOKEN_HEADER)) {
             throw AuthenticationException::missingCredentials();
         }
 
-        $clientId = $request->getHeader(static::CLIENT_HEADER)[0];
-        $apiToken = $request->getHeader(static::TOKEN_HEADER)[0];
+        $accessToken = $request->getHeader(static::TOKEN_HEADER)[0];
 
         try {
-            $user = $this->userRepository->find(Uuid::fromString($clientId));
+            $token = (new Parser())->parse($accessToken);
 
-            if (!$this->hasher->verify($apiToken, $user->getApiToken())) {
+            if (!$token->validate(new ValidationData())) {
+                throw AuthenticationException::invalidToken();
+            }
+
+            if (!$token->verify($this->signer, $this->secretKey)) {
+                throw AuthenticationException::invalidToken();
+            }
+
+            $userId = $token->getClaim('jti');
+            $user = $this->userRepository->find(Uuid::fromString($userId));
+
+        } catch (ModelNotFoundException $e) {
+            throw AuthenticationException::invalidToken();
+        }
+
+        $this->setAuthenticatedUser($user);
+    }
+
+    public function login(string $username, string $password): Token
+    {
+        try {
+            $user = $this->userRepository->findByUsername($username);
+
+            if (!$this->hasher->verify($password, $user->getPassword())) {
                 throw AuthenticationException::invalidCredentials();
             }
         } catch (ModelNotFoundException $e) {
             throw AuthenticationException::invalidCredentials();
         }
 
-        $this->setAuthenticatedUser($user);
+        return (new Builder())
+            ->identifiedBy($user->getId()->toString())
+            ->expiresAt(time() + 3600)
+            ->issuedAt(time())
+            ->getToken($this->signer, new Key($this->secretKey));
     }
 
     public function getAuthenticatedUser(): ?User
