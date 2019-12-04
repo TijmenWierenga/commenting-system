@@ -37,9 +37,10 @@ final class TreeBuilder
 
         return [
             'uuid' => $comment->getId()->toString(),
-            'content' => $comment->getContent(),
             'authorId' => $comment->getAuthorId()->toString(),
-            'comments' => $comments
+            'content' => $comment->getContent(),
+            'createdAt' => $comment->getCreatedAt()->format(DATE_ATOM),
+            'comments' => $comments,
         ];
     }
 }
