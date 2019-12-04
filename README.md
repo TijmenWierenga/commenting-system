@@ -1,5 +1,5 @@
 # Commenting system
-A tailored and extensible commenting micro-service.
+A tailored and extensible commenting micro-service API.
 
 ## Prerequisites
 * Docker Engine >=18.09
