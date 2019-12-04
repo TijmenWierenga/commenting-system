@@ -7,7 +7,7 @@
 #
 # Host: 127.0.01 (MySQL 5.5.5-10.4.10-MariaDB-1:10.4.10+maria~bionic)
 # Database: api
-# Generation Time: 2019-12-03 20:33:51 +0000
+# Generation Time: 2019-12-04 08:21:04 +0000
 # ************************************************************
 
 
@@ -96,22 +96,20 @@ CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(64) NOT NULL DEFAULT '',
   `username` varchar(64) NOT NULL DEFAULT '',
-  `api_token` varchar(128) NOT NULL DEFAULT '',
+  `password` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `uuid` (`uuid`),
-  UNIQUE KEY `api_token_2` (`api_token`),
   KEY `uuid_2` (`uuid`),
-  KEY `username_2` (`username`),
-  KEY `api_token` (`api_token`)
+  KEY `username_2` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `uuid`, `username`, `api_token`)
+INSERT INTO `users` (`id`, `uuid`, `username`, `password`)
 VALUES
-	(1,'186206f9-1ed6-42cf-ab02-3f4d1226a113','tijmen','$argon2id$v=19$m=65536,t=4,p=1$L0RncFVWTEh3aDQ0Z0F3bg$yEc+w6iOJMfu9Pkhhcfww8QkRJrj9DAA67g7cgYKOlM');
+	(1,'186206f9-1ed6-42cf-ab02-3f4d1226a113','tijmen','$argon2id$v=19$m=65536,t=4,p=1$ZlVLS2VONlZvaDZ6amN1Uw$ZxDCXGdZ2djLQ3T7oKnxbRELtXzhc4Gk8++/5ji2DIs');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
