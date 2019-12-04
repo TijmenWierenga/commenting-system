@@ -20,5 +20,14 @@ services:
       MYSQL_ROOT_PASSWORD: demo
       MYSQL_DATABASE: api
 
+  docs:
+    image: redocly/redoc:latest
+    volumes:
+    - ./public/openapi.yaml:/usr/share/nginx/html/openapi.yaml
+    ports:
+    - 8080:80
+    environment:
+      SPEC_URL: openapi.yaml
+
 volumes:
   mariadb_data: ~

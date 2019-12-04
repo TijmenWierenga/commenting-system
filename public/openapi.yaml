@@ -1,0 +1,161 @@
+  openapi: '3.0.0'
+  info:
+    title: 'Commenting API'
+    version: '1.0.0'
+    contact:
+      email: 't.wierenga@live.nl'
+      name: 'Tijmen Wierenga'
+  servers:
+    - url: localhost
+      description: Local server
+  tags:
+    - name: articles
+      description: Article related endpoints
+    - name: authentication
+      description: Authentication related endpoints
+    - name: comments
+      description: Comment related endpoints
+  paths:
+    /register:
+      post:
+        summary: Register
+        description: Create a new user account
+        operationId: register
+        tags:
+          - authentication
+        requestBody:
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/user-post'
+        responses:
+          200:
+            description: OK
+            content:
+              'application/json':
+                schema:
+                  $ref: '#/components/schemas/user-get'
+    /login:
+      post:
+        summary: Login
+        description: Acquire an access token by providing a correct username and password combination.
+        operationId: login
+        tags:
+          - authentication
+        requestBody:
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/user-post'
+        responses:
+          200:
+            description: OK
+            content:
+              'application/json':
+                schema:
+                  properties:
+                    token:
+                      type: string
+                      example: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxODYyMDZmOS0xZWQ2LTQyY2YtYWIwMi0zZjRkMTIyNmExMTMiLCJleHAiOjE1NzU0ODY3MzcsImlhdCI6MTU3NTQ4MzEzN30.GKIFDf6w88SwjqADmN_Egf-u76r38TL83DbZh7wercM'
+    /article/{uuid}:
+      parameters:
+        - name: uuid
+          description: Unique identifier for the article
+          in: path
+          required: true
+          schema:
+            type: string
+            example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
+      get:
+        summary: 'Get article'
+        description: 'Get an article by a unique identifier'
+        operationId: article-get
+        tags:
+          - articles
+        responses:
+          200:
+            description: OK
+            content:
+              'application/json':
+                schema:
+                  properties:
+                    uuid:
+                      type: string
+                      example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
+                    authorId:
+                      type: string
+                      example: '186206f9-1ed6-42cf-ab02-3f4d1226a113'
+                    title:
+                      type: string
+                      example: 'PHP is great'
+                    content:
+                      type: string
+                      example: 'All the content of this great article'
+    /article/{uuid}/comments:
+      parameters:
+        - name: uuid
+          description: Unique identifier for the article
+          in: path
+          required: true
+          schema:
+            type: string
+            example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
+      get:
+        summary: 'Get article comments'
+        description: 'Get all comments for an article'
+        operationId: article-get-comments
+        tags:
+          - articles
+          - comments
+        responses:
+          200:
+            description: OK
+            content:
+              'application/json':
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/comment'
+  components:
+    schemas:
+      user-get:
+        type: object
+        properties:
+          uuid:
+            type: string
+            example: '4159e08d-e7b6-40af-97ef-9fd593c8944a'
+          username:
+            type: string
+            example: 'your-username'
+      user-post:
+        type: object
+        properties:
+          username:
+            type: string
+            example: 'your-username'
+          password:
+            type: string
+            example: 'plain-text-password'
+      comment:
+        description: A comment
+        type: object
+        properties:
+          uuid:
+            type: string
+            example: '7c14a5be-55ce-4822-b48d-527e8e967da2'
+          authorId:
+            type: string
+            example: '186206f9-1ed6-42cf-ab02-3f4d1226a113'
+          content:
+            type: string
+            description: 'the actual comment'
+            example: 'Great article, mate'
+          createdAt:
+            type: string
+            format: datetime
+            example: '2019-12-03T08:21:00+00:00'
+          comments:
+            type: array
+            description: 'Nested comments'
+            items:
+              $ref: '#/components/schemas/comment'
