@@ -53,7 +53,6 @@ final class AuthManager
 
             $userId = $token->getClaim('jti');
             $user = $this->userRepository->find(Uuid::fromString($userId));
-
         } catch (ModelNotFoundException $e) {
             throw AuthenticationException::invalidToken();
         }

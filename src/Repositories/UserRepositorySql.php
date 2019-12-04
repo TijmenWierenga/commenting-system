@@ -48,7 +48,6 @@ final class UserRepositorySql implements UserRepository
             Uuid::fromString($data['uuid']),
             $data['username'],
             $data['password'],
-            $data['api_token']
         );
     }
 
@@ -69,7 +68,6 @@ final class UserRepositorySql implements UserRepository
             Uuid::fromString($data['uuid']),
             $data['username'],
             $data['password'],
-            $data['api_token']
         );
     }
 }
