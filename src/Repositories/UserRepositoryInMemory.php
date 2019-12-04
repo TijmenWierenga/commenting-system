@@ -59,4 +59,16 @@ class UserRepositoryInMemory implements UserRepository
             fn (User $user): bool => $user->getId()->toString() === $uuid->toString()
         );
     }
+
+    public function save(User $user): void
+    {
+        if ($this->exists($user->getId())) {
+            $this->users = array_filter(
+                $this->users,
+                fn (User $item): bool => $item->getId()->toString() !== $user->getId()->toString()
+            ); // Remove existing user from collection
+        }
+
+        $this->users[] = $user;
+    }
 }

@@ -70,4 +70,17 @@ final class UserRepositorySql implements UserRepository
             $data['password'],
         );
     }
+
+    public function save(User $user): void
+    {
+        $statement = $this->pdo->prepare('INSERT INTO 
+                users (`uuid`, `username`, `password`) 
+            VALUES 
+                (:uuid, :username, :password)');
+        $statement->execute([
+            'uuid' => $user->getId()->toString(),
+            'username' => $user->getUsername(),
+            'password' => $user->getPassword()
+        ]);
+    }
 }
