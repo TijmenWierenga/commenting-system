@@ -19,7 +19,7 @@ final class AuthManager
     public const TOKEN_HEADER = 'Authorization';
 
     private UserRepository $userRepository;
-    private User $authenticatedUser;
+    private ?User $authenticatedUser;
     private Hasher $hasher;
     private string $secretKey;
     private Sha256 $signer;
