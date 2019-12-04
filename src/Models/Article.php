@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting\Models;
 
+use JsonSerializable;
 use Ramsey\Uuid\UuidInterface;
 
-final class Article implements Commentable
+final class Article implements Commentable, JsonSerializable
 {
     private CommentableId $id;
     private string $title;
@@ -29,5 +30,15 @@ final class Article implements Commentable
     public function getRootId(): CommentableId
     {
         return $this->getId();
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'uuid' => $this->getId()->toString(),
+            'authorId' => $this->authorId->toString(),
+            'title' => $this->title,
+            'content' => $this->content,
+        ];
     }
 }
