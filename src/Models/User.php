@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting\Models;
 
+use JsonSerializable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
+final class User implements JsonSerializable
 {
     private UuidInterface $id;
     private string $username;
@@ -42,5 +44,13 @@ use Ramsey\Uuid\UuidInterface;
     public function getUsername(): string
     {
         return $this->username;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'uuid' => $this->getId()->toString(),
+            'username' => $this->getUsername()
+        ];
     }
 }
