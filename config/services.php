@@ -14,9 +14,13 @@ use TijmenWierenga\Commenting\Repositories\{
     UserRepository,
     UserRepositorySql
 };
+use TijmenWierenga\Commenting\Authentication\AuthManager;
+use TijmenWierenga\Commenting\Hashing\{Argon2IdHasher, Hasher};
+use TijmenWierenga\Commenting\Middleware\AuthenticationMiddleware;
 
 /** @var Container $container */
 
+// SERVICE DEFINITIONS
 $container->add(PDO::class)
     ->addArgument($_ENV['MYSQL_DSN'])
     ->addArgument($_ENV['MYSQL_USERNAME'])
@@ -36,3 +40,12 @@ $container->add(CommentableRepositoryProxied::class)->addArgument([
     CommentableId::RESOURCE_TYPE_COMMENT => $container->get(CommentRepository::class)
 ]);
 $container->add(CommentableRepository::class, $container->get(CommentableRepositoryProxied::class));
+$container->add(AuthManager::class)
+    ->addArgument(UserRepository::class)
+    ->addArgument(Hasher::class)
+    ->addArgument($_ENV['SECRET_KEY'])
+    ->setShared(true);
+$container->add(Hasher::class, Argon2IdHasher::class);
+
+// MIDDLEWARE
+$container->get(AuthenticationMiddleware::class);

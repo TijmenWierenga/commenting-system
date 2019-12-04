@@ -9,6 +9,7 @@ use League\Container\ReflectionContainer;
 use League\Route\Router;
 use League\Route\Strategy\ApplicationStrategy;
 use League\Route\Strategy\StrategyInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -28,6 +29,8 @@ class Kernel
         /** @var Router $router */
         $router = (new Router())->setStrategy($strategy);
 
+        $router = $this->registerGlobalMiddleware($router, $container);
+
         // Load all routes
         require_once dirname(__DIR__) . '/config/routes.php';
 
@@ -37,5 +40,10 @@ class Kernel
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return $this->router->dispatch($request);
+    }
+
+    private function registerGlobalMiddleware(Router $router, ContainerInterface $container): Router
+    {
+        return $router;
     }
 }

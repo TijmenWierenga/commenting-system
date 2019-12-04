@@ -7,6 +7,7 @@ namespace TijmenWierenga\Tests\Commenting\Transformers;
 use PHPUnit\Framework\TestCase;
 use TijmenWierenga\Commenting\Models\Comment;
 use TijmenWierenga\Commenting\Transformers\Comments\TreeBuilder;
+
 use function TijmenWierenga\Tests\Commenting\Factories\make_article;
 use function TijmenWierenga\Tests\Commenting\Factories\make_user;
 
