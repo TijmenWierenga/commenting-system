@@ -4,20 +4,29 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting\Models;
 
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-final class User
 {
     private UuidInterface $id;
     private string $username;
-    private string $apiToken;
     private string $password;
 
-    public function __construct(UuidInterface $id, string $username, string $password)
+    private function __construct(UuidInterface $id, string $username, string $password)
     {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
+    }
+
+    public static function new(string $username, string $password): self
+    {
+        return new static(Uuid::uuid4(), $username, $password);
+    }
+
+    public static function fromScalar(UuidInterface $id, string $username, string $password): self
+    {
+        return new static($id, $username, $password);
     }
 
     public function getId(): UuidInterface
