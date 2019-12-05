@@ -59,7 +59,7 @@ class Kernel
         $router->middleware($container->get(UnsupportedMediaTypeMiddleware::class));
         $router->middleware($container->get(UnsupportedContentTypeMiddleware::class));
         $router->middleware(
-            (new ValidationMiddlewareBuilder)
+            (new ValidationMiddlewareBuilder())
                 ->fromYamlFile(dirname(__DIR__) . '/public/openapi.yaml')
                 ->getValidationMiddleware()
         );
