@@ -3,23 +3,20 @@
 declare(strict_types=1);
 
 use League\Container\Container;
+use TijmenWierenga\Commenting\Authentication\AuthManager;
+use TijmenWierenga\Commenting\Exceptions\ExceptionHandler;
+use TijmenWierenga\Commenting\Exceptions\Handlers\CatchAllHandler;
+use TijmenWierenga\Commenting\Exceptions\Handlers\NotFoundHandler;
+use TijmenWierenga\Commenting\Hashing\{Argon2IdHasher, Hasher};
 use TijmenWierenga\Commenting\Models\{CommentableId};
-use TijmenWierenga\Commenting\Repositories\{
-    ArticleRepository,
+use TijmenWierenga\Commenting\Repositories\{ArticleRepository,
     ArticleRepositorySql,
     CommentableRepository,
     CommentableRepositoryProxied,
     CommentRepository,
     CommentRepositorySql,
     UserRepository,
-    UserRepositorySql
-};
-use TijmenWierenga\Commenting\Authentication\AuthManager;
-use TijmenWierenga\Commenting\Hashing\{Argon2IdHasher, Hasher};
-use TijmenWierenga\Commenting\Exceptions\ExceptionHandler;
-use TijmenWierenga\Commenting\Exceptions\Handlers\CatchAllHandler;
-use TijmenWierenga\Commenting\Exceptions\Handlers\NotFoundHandler;
-use TijmenWierenga\Commenting\Middleware\AuthenticationMiddleware;
+    UserRepositorySql};
 
 /** @var Container $container */
 
@@ -34,15 +31,31 @@ $container->add(PDO::class)
 $container->add(CommentRepositorySql::class)->addArgument(PDO::class);
 $container->add(ArticleRepositorySql::class)->addArgument(PDO::class);
 $container->add(UserRepositorySql::class)->addArgument(PDO::class);
-$container->add(ArticleRepository::class, $container->get(ArticleRepositorySql::class));
-$container->add(CommentRepository::class, $container->get(CommentRepositorySql::class));
-$container->add(UserRepository::class, $container->get(UserRepositorySql::class));
-
-$container->add(CommentableRepositoryProxied::class)->addArgument([
+$container->add(
+    CommentableRepositoryProxied::class,
+    fn (): CommentableRepositoryProxied => new CommentableRepositoryProxied([
     CommentableId::RESOURCE_TYPE_ARTICLE => $container->get(ArticleRepository::class),
     CommentableId::RESOURCE_TYPE_COMMENT => $container->get(CommentRepository::class)
-]);
-$container->add(CommentableRepository::class, $container->get(CommentableRepositoryProxied::class));
+    ])
+);
+
+$container->add(
+    ArticleRepository::class,
+    fn (): ArticleRepository => $container->get(ArticleRepositorySql::class)
+);
+$container->add(
+    CommentRepository::class,
+    fn (): CommentRepository => $container->get(CommentRepositorySql::class)
+);
+$container->add(
+    UserRepository::class,
+    fn (): UserRepository => $container->get(UserRepositorySql::class)
+);
+$container->add(
+    CommentableRepository::class,
+    fn (): CommentableRepository => $container->get(CommentableRepositoryProxied::class)
+);
+
 $container->add(AuthManager::class)
     ->addArgument(UserRepository::class)
     ->addArgument(Hasher::class)
