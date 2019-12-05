@@ -13,7 +13,7 @@ final class TreeBuilder
      */
     private array $comments;
 
-    public function transform(Comment ...$comments): array
+    public function transform(string $sortOrder, Comment ...$comments): array
     {
         $this->comments = $comments;
 
@@ -22,6 +22,14 @@ final class TreeBuilder
             $comments,
             fn (Comment $item) => $item->getBelongsToId()->toString() === $rootId->toString()
         );
+
+        if ($sortOrder === 'asc') {
+            usort($rootComments, fn (Comment $a, Comment $b) => $a->getCreatedAt() <=> $b->getCreatedAt());
+        }
+
+        if ($sortOrder === 'desc') {
+            usort($rootComments, fn (Comment $a, Comment $b) => $b->getCreatedAt() <=> $a->getCreatedAt());
+        }
 
         return array_values(array_map([$this, 'createComment'], $rootComments));
     }
