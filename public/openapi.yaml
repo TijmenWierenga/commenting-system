@@ -25,6 +25,7 @@
         operationId: register
         tags:
           - authentication
+          - users
         requestBody:
           content:
             'application/json':
@@ -139,7 +140,30 @@
                 schema:
                   type: array
                   items:
-                    $ref: '#/components/schemas/comment'
+                    $ref: '#/components/schemas/comment-nested'
+    /comment:
+      post:
+        summary: Create new comment
+        description: Add a new comment. A new comment can be added to everything that is a commentable.
+        operationId: comment-create
+        tags:
+          - comments
+          - articles
+        security:
+          - bearerAuth: []
+        requestBody:
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/comment-write'
+          required: true
+        responses:
+          201:
+            description: Created
+            content:
+              'application/json':
+                schema:
+                  $ref: '#/components/schemas/comment-read'
   components:
     schemas:
       user-get:
@@ -160,8 +184,8 @@
           password:
             type: string
             example: 'plain-text-password'
-      comment:
-        description: A comment
+      comment-nested:
+        description: A nested comment
         type: object
         properties:
           uuid:
@@ -182,4 +206,51 @@
             type: array
             description: 'Nested comments'
             items:
-              $ref: '#/components/schemas/comment'
+              $ref: '#/components/schemas/comment-nested'
+      comment-read:
+        description: A comment
+        type: object
+        properties:
+          id:
+            type: string
+            example: '7c14a5be-55ce-4822-b48d-527e8e967da2'
+          authorId:
+            type: string
+            example: '186206f9-1ed6-42cf-ab02-3f4d1226a113'
+          content:
+            type: string
+          createdAt:
+            type: string
+            format: datetime
+            example: '2019-12-05T18:08:31+00:00'
+          root:
+            $ref: '#/components/schemas/commentable-id'
+          belongsTo:
+            $ref: '#/components/schemas/commentable-id'
+      comment-write:
+        description: Request body for creating a new comment
+        type: object
+        properties:
+          content:
+            type: string
+            description: The comment you want to add
+          resource:
+            $ref: '#/components/schemas/commentable-id'
+      commentable-id:
+        type: object
+        properties:
+          id:
+            type: string
+            description: Uuid of the commentable
+            example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
+          type:
+            type: string
+            description: The type of the commentable
+            enum:
+              - article
+              - comment
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
