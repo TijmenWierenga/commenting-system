@@ -13,6 +13,8 @@ use League\Route\Strategy\StrategyInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TijmenWierenga\Commenting\Middleware\UnsupportedContentTypeMiddleware;
+use TijmenWierenga\Commenting\Middleware\UnsupportedMediaTypeMiddleware;
 
 class Kernel
 {
@@ -53,6 +55,9 @@ class Kernel
 
     private function registerGlobalMiddleware(Router $router, ContainerInterface $container): Router
     {
+        $router->middleware($container->get(UnsupportedMediaTypeMiddleware::class));
+        $router->middleware($container->get(UnsupportedContentTypeMiddleware::class));
+
         return $router;
     }
 
