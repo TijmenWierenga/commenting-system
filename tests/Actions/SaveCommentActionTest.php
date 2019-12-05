@@ -42,7 +42,7 @@ final class SaveCommentActionTest extends TestCase
             '/comment',
             [
                 'Content-Type' => 'application/json',
-                'Authorization' => (string) $accessToken
+                'Authorization' => sprintf('Bearer %s', (string) $accessToken)
             ],
             json_encode([
                 'content' => 'I love this article',

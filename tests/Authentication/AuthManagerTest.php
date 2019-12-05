@@ -48,7 +48,7 @@ final class AuthManagerTest extends TestCase
         $authManager = new AuthManager($userRepository, new PlainTextHasher(), 'secret-key');
 
         $request = new ServerRequest('GET', '/', [
-            'Authorization' => (string) $accessToken
+            'Authorization' => sprintf('Bearer %s', (string) $accessToken)
         ]);
 
         $authManager->authenticate($request);
@@ -66,7 +66,7 @@ final class AuthManagerTest extends TestCase
         $authManager = new AuthManager($userRepository, new PlainTextHasher(), 'secret-key');
 
         $request = new ServerRequest('GET', '/', [
-            'Authorization' => (string) $accessToken
+            'Authorization' => sprintf('Bearer %s', (string) $accessToken)
         ]);
 
         $authManager->authenticate($request);
