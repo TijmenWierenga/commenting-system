@@ -5,6 +5,7 @@ declare(strict_types=1);
 use League\Route\Router;
 use TijmenWierenga\Commenting\Actions\{
     GetArticleAction,
+    GetCommentAction,
     GetCommentsForArticleAction,
     GetUserAction,
     LoginAction,
@@ -44,3 +45,8 @@ $router->post(
     '/comment',
     SaveCommentAction::class
 )->middleware($container->get(AuthenticationMiddleware::class));
+
+$router->get(
+    '/comment/{id}',
+    GetCommentAction::class
+);
