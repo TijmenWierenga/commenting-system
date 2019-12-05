@@ -16,7 +16,7 @@
     - name: comments
       description: Comment related endpoints
   paths:
-    /register:
+    /user:
       post:
         summary: Register
         description: Create a new user account
