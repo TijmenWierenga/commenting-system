@@ -39,6 +39,7 @@ $router->get(
     '/article/{id}/comments',
     GetCommentsForArticleAction::class
 );
+
 $router->post(
     '/comment',
     SaveCommentAction::class
