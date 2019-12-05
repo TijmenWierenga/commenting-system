@@ -3,6 +3,9 @@ DOCKER_RUN = docker run -it --rm -v $$(pwd):/app -w /app $(PHP_IMAGE)
 DOCKER_COMPOSE = docker-compose -f docker-compose.yml -f docker-compose.dev.yml
 
 start: build
+	docker-compose up -d
+
+dev: build
 	$(DOCKER_COMPOSE) up -d
 
 build:
