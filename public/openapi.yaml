@@ -125,6 +125,15 @@ paths:
         schema:
           type: string
           example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
+      - name: sort_by
+        description: Sort order for the comments
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
     get:
       summary: 'Get article comments'
       description: 'Get all comments for an article'

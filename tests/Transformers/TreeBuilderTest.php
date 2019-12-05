@@ -20,7 +20,7 @@ final class TreeBuilderTest extends TestCase
         $comment = Comment::newFor($article, $user->getId(), 'Such comment');
 
         $treeBuilder = new TreeBuilder();
-        $result = $treeBuilder->transform($comment);
+        $result = $treeBuilder->transform('desc', $comment);
 
         $expected = [
             [
@@ -43,7 +43,7 @@ final class TreeBuilderTest extends TestCase
         $commentOnComment = Comment::newFor($comment, $user->getId(), 'I commented on your comment');
 
         $treeBuilder = new TreeBuilder();
-        $result = $treeBuilder->transform($comment, $commentOnComment);
+        $result = $treeBuilder->transform('desc', $comment, $commentOnComment);
 
         $expected = [
             [

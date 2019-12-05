@@ -26,7 +26,7 @@ final class GetCommentsForArticleAction
         $articleId = Uuid::fromString($args['id']);
 
         $comments = ($this->commentService)($articleId);
-        $tree = $this->treeBuilder->transform(...$comments);
+        $tree = $this->treeBuilder->transform($request->getQueryParams()['sort_by'] ?? 'asc', ...$comments);
 
         return new Response(
             200,
