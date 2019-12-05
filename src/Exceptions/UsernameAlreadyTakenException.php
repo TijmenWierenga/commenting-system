@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting\Exceptions;
 
-use RuntimeException;
-
-final class UsernameAlreadyTakenException extends RuntimeException
+final class UsernameAlreadyTakenException extends HttpException
 {
     public static function forUsername(string $username): self
     {
-        return new self(sprintf('Username "%s" is already taken', $username));
+        return new self(400, sprintf('Username "%s" is already taken', $username));
     }
 }
