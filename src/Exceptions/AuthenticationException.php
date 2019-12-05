@@ -12,8 +12,7 @@ final class AuthenticationException extends RuntimeException
     public static function missingCredentials(): self
     {
         return new self(sprintf(
-            'No credentials provided. 
-            Please supply an "%s" header with a valid access token',
+            'No credentials provided. Please supply an "%s" header with a valid access token',
             AuthManager::TOKEN_HEADER
         ));
     }
