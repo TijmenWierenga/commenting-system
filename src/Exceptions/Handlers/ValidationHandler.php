@@ -33,7 +33,12 @@ final class ValidationHandler implements Handler
                 'error' => $previous->getMessage(),
                 'keyword' => $previous->keyword(),
                 'data' => $previous->data(),
-                'breadCrumb' => implode('.', $previous->dataBreadCrumb()->buildChain() ?? [])
+                'breadCrumb' => implode(
+                    '.',
+                    $previous->dataBreadCrumb() !== null
+                        ? $previous->dataBreadCrumb()->buildChain()
+                        : []
+                )
             ];
         }
 
@@ -42,7 +47,12 @@ final class ValidationHandler implements Handler
                 'message' => $e->getMessage(),
                 'error' => $previous->getMessage(),
                 'data' => $previous->data(),
-                'breadCrumb' => implode('.', $previous->dataBreadCrumb()->buildChain() ?? [])
+                'breadCrumb' => implode(
+                    '.',
+                    $previous->dataBreadCrumb() !== null
+                        ? $previous->dataBreadCrumb()->buildChain()
+                        : []
+                )
             ];
         }
 
