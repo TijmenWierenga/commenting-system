@@ -5,7 +5,7 @@ A tailored and extensible commenting micro-service API.
 * Docker Engine >=18.09
 
 ## Usage
-If you have [make]() installed, you can build and start the stack with:
+If you have [make](https://www.gnu.org/software/make/) installed, you can build and start the stack with:
 ```bash
 make
 ```
