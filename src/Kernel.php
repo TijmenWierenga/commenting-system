@@ -7,6 +7,7 @@ namespace TijmenWierenga\Commenting;
 use Exception;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
+use League\OpenAPIValidation\PSR15\ValidationMiddlewareBuilder;
 use League\Route\Router;
 use League\Route\Strategy\ApplicationStrategy;
 use League\Route\Strategy\StrategyInterface;
@@ -57,6 +58,11 @@ class Kernel
     {
         $router->middleware($container->get(UnsupportedMediaTypeMiddleware::class));
         $router->middleware($container->get(UnsupportedContentTypeMiddleware::class));
+        $router->middleware(
+            (new ValidationMiddlewareBuilder())
+                ->fromYamlFile(dirname(__DIR__) . '/public/openapi.yaml')
+                ->getValidationMiddleware()
+        );
 
         return $router;
     }
