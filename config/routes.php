@@ -6,6 +6,7 @@ use League\Route\Router;
 use TijmenWierenga\Commenting\Actions\{
     GetArticleAction,
     GetCommentsForArticleAction,
+    GetUserAction,
     LoginAction,
     RegisterUserAction,
     SaveCommentAction
@@ -17,6 +18,11 @@ use TijmenWierenga\Commenting\Middleware\AuthenticationMiddleware;
 $router->post(
     '/user',
     RegisterUserAction::class
+);
+
+$router->get(
+    '/user/{id}',
+    GetUserAction::class
 );
 
 $router->post(
