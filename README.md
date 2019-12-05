@@ -5,6 +5,13 @@ A tailored and extensible commenting micro-service API.
 * Docker Engine >=18.09
 
 ## Usage
+If you have [make]() installed, you can build and start the stack with:
+```bash
+make
+```
+
+If you don't have **make** installed, follow the instructions below:
+
 Start by building the Docker image (run command from project root directory):
 ```bash
 DOCKER_BUILDKIT=1 docker build -t tijmenwierenga/commenting-system:latest .
