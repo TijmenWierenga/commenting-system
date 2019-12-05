@@ -21,8 +21,8 @@ final class AuthManagerTest extends TestCase
     public function testItThrowsAnErrorWhenNoTokenIsProvided(): void
     {
         $this->expectException(AuthenticationException::class);
-        $this->expectDeprecationMessage('No credentials provided. 
-            Please supply an "Authorization" header with a valid access token');
+        $this->expectDeprecationMessage('No credentials provided. ' .
+            'Please supply an "Authorization" header with a valid access token');
 
         $user = make_user('tijmen');
         $userRepository = new UserRepositoryInMemory($user);

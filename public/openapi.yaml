@@ -164,6 +164,28 @@
               'application/json':
                 schema:
                   $ref: '#/components/schemas/comment-read'
+    /comment/{uuid}:
+      parameters:
+        - name: uuid
+          description: Unique identifier for the article
+          in: path
+          required: true
+          schema:
+            type: string
+            example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
+      get:
+        summary: Get comment
+        description: Get a comment by ID
+        operationId: comment-get
+        tags:
+          - comments
+        responses:
+          200:
+            description: OK
+            content:
+              'application/json':
+                schema:
+                  $ref: '#/components/schemas/comment-read'
   components:
     schemas:
       user-get:
