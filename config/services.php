@@ -5,18 +5,19 @@ declare(strict_types=1);
 use League\Container\Container;
 use TijmenWierenga\Commenting\Authentication\AuthManager;
 use TijmenWierenga\Commenting\Exceptions\ExceptionHandler;
-use TijmenWierenga\Commenting\Exceptions\Handlers\CatchAllHandler;
-use TijmenWierenga\Commenting\Exceptions\Handlers\NotFoundHandler;
+use TijmenWierenga\Commenting\Exceptions\Handlers\{CatchAllHandler, NotFoundHandler, UnauthenticatedHandler};
 use TijmenWierenga\Commenting\Hashing\{Argon2IdHasher, Hasher};
 use TijmenWierenga\Commenting\Models\{CommentableId};
-use TijmenWierenga\Commenting\Repositories\{ArticleRepository,
+use TijmenWierenga\Commenting\Repositories\{
+    ArticleRepository,
     ArticleRepositorySql,
     CommentableRepository,
     CommentableRepositoryProxied,
     CommentRepository,
     CommentRepositorySql,
     UserRepository,
-    UserRepositorySql};
+    UserRepositorySql
+};
 
 /** @var Container $container */
 
@@ -65,6 +66,7 @@ $container->add(Hasher::class, Argon2IdHasher::class);
 
 // EXCEPTION HANDLER
 $container->add(NotFoundHandler::class)->addTag('exception_handlers');
+$container->add(UnauthenticatedHandler::class)->addTag('exception_handlers');
 $container->add(CatchAllHandler::class)->addTag('exception_handlers');
 $container->add(ExceptionHandler::class)->addArguments($container->get('exception_handlers'));
 $container->add('exception_handler', fn (): ExceptionHandler => $container->get(ExceptionHandler::class));
