@@ -38,7 +38,7 @@ final class AuthManager
             throw AuthenticationException::missingCredentials();
         }
 
-        $accessToken = $request->getHeader(static::TOKEN_HEADER)[0];
+        $accessToken = explode(' ', $request->getHeader(static::TOKEN_HEADER)[0])[1];
 
         try {
             $token = (new Parser())->parse($accessToken);

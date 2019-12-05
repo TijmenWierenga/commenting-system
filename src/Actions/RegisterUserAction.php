@@ -25,7 +25,7 @@ final class RegisterUserAction
         $user = ($this->registerUserService)($data['username'], $data['password']);
 
         return new Response(
-            200,
+            201,
             ['Content-Type' => 'application/json'],
             json_encode($user, JSON_THROW_ON_ERROR, 512),
         );

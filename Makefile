@@ -19,5 +19,8 @@ phpstan:
 phpunit:
 	$(DOCKER_RUN) vendor/bin/phpunit
 
-.PHONY: test phpstan phpunit
-.SILENT: test phpstan phpunit
+docs_lint:
+	docker run -v $$(pwd)/public/openapi.yaml:/project/openapi.yaml wework/speccy lint openapi.yaml
+
+.PHONY: start build test phpstan phpunit phpcs docs_lint
+.SILENT: start build test phpstan phpunit phpcs docs_lint
