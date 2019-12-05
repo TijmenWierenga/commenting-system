@@ -25,8 +25,9 @@ final class TreeBuilderTest extends TestCase
         $expected = [
             [
                 'uuid' => $comment->getId()->toString(),
-                'content' => 'Such comment',
                 'authorId' => $user->getId()->toString(),
+                'content' => 'Such comment',
+                'createdAt' => $comment->getCreatedAt()->format(DATE_ATOM),
                 'comments' => []
             ]
         ];
@@ -47,13 +48,15 @@ final class TreeBuilderTest extends TestCase
         $expected = [
             [
                 'uuid' => $comment->getId()->toString(),
-                'content' => 'Such comment',
                 'authorId' => $user->getId()->toString(),
+                'content' => 'Such comment',
+                'createdAt' => $comment->getCreatedAt()->format(DATE_ATOM),
                 'comments' => [
                     [
                         'uuid' => $commentOnComment->getId()->toString(),
-                        'content' => 'I commented on your comment',
                         'authorId' => $user->getId()->toString(),
+                        'content' => 'I commented on your comment',
+                        'createdAt' => $commentOnComment->getCreatedAt()->format(DATE_ATOM),
                         'comments' => []
                     ]
                 ]
