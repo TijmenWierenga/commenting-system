@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TijmenWierenga\Commenting;
 
+use Exception;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use League\Route\Router;
@@ -16,6 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Kernel
 {
     private Router $router;
+    private Container $container;
 
     public function __construct()
     {
@@ -35,15 +37,31 @@ class Kernel
         require_once dirname(__DIR__) . '/config/routes.php';
 
         $this->router = $router;
+        $this->container = $container;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->router->dispatch($request);
+        try {
+            $response = $this->router->dispatch($request);
+        } catch (Exception $e) {
+            $response = $this->handleException($e);
+        }
+
+        return $response;
     }
 
     private function registerGlobalMiddleware(Router $router, ContainerInterface $container): Router
     {
         return $router;
+    }
+
+    private function handleException(Exception $e): ResponseInterface
+    {
+        if (!$this->container->has('exception_handler')) {
+            throw $e;
+        }
+
+        return $this->container->get('exception_handler')($e);
     }
 }

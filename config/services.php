@@ -16,6 +16,9 @@ use TijmenWierenga\Commenting\Repositories\{
 };
 use TijmenWierenga\Commenting\Authentication\AuthManager;
 use TijmenWierenga\Commenting\Hashing\{Argon2IdHasher, Hasher};
+use TijmenWierenga\Commenting\Exceptions\ExceptionHandler;
+use TijmenWierenga\Commenting\Exceptions\Handlers\CatchAllHandler;
+use TijmenWierenga\Commenting\Exceptions\Handlers\NotFoundHandler;
 use TijmenWierenga\Commenting\Middleware\AuthenticationMiddleware;
 
 /** @var Container $container */
@@ -47,5 +50,8 @@ $container->add(AuthManager::class)
     ->setShared(true);
 $container->add(Hasher::class, Argon2IdHasher::class);
 
-// MIDDLEWARE
-$container->get(AuthenticationMiddleware::class);
+// EXCEPTION HANDLER
+$container->add(NotFoundHandler::class)->addTag('exception_handlers');
+$container->add(CatchAllHandler::class)->addTag('exception_handlers');
+$container->add(ExceptionHandler::class)->addArguments($container->get('exception_handlers'));
+$container->add('exception_handler', fn (): ExceptionHandler => $container->get(ExceptionHandler::class));
