@@ -39,7 +39,7 @@ final class ExceptionHandlerTest extends TestCase
     public function testItPassesTheResponseToTheSupportedHandler(): void
     {
         $response = new Response(500);
-        $handler = new class($response) implements Handler {
+        $handler = new class ($response) implements Handler {
             private ResponseInterface $response;
 
             public function __construct(ResponseInterface $response)
