@@ -82,6 +82,23 @@ paths:
                   token:
                     type: string
                     example: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxODYyMDZmOS0xZWQ2LTQyY2YtYWIwMi0zZjRkMTIyNmExMTMiLCJleHAiOjE1NzU0ODY3MzcsImlhdCI6MTU3NTQ4MzEzN30.GKIFDf6w88SwjqADmN_Egf-u76r38TL83DbZh7wercM'
+  /article:
+    get:
+      summary: List articles
+      description: List all articles
+      operationId: articles-list
+      tags:
+        - articles
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/article-read'
   /article/{uuid}:
     parameters:
       - name: uuid
@@ -103,19 +120,7 @@ paths:
           content:
             'application/json':
               schema:
-                properties:
-                  uuid:
-                    type: string
-                    example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
-                  authorId:
-                    type: string
-                    example: '186206f9-1ed6-42cf-ab02-3f4d1226a113'
-                  title:
-                    type: string
-                    example: 'PHP is great'
-                  content:
-                    type: string
-                    example: 'All the content of this great article'
+                $ref: '#/components/schemas/article-read'
   /article/{uuid}/comments:
     parameters:
       - name: uuid
@@ -197,6 +202,21 @@ paths:
                 $ref: '#/components/schemas/comment-read'
 components:
   schemas:
+    article-read:
+      type: object
+      properties:
+        uuid:
+          type: string
+          example: '780fdc7e-adeb-4cf5-9521-e53c52557a6d'
+        authorId:
+          type: string
+          example: '186206f9-1ed6-42cf-ab02-3f4d1226a113'
+        title:
+          type: string
+          example: 'PHP is great'
+        content:
+          type: string
+          example: 'All the content of this great article'
     user-get:
       type: object
       properties:

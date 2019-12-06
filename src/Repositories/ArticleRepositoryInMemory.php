@@ -44,4 +44,12 @@ class ArticleRepositoryInMemory implements ArticleRepository
 
         return true;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAll(): array
+    {
+        return $this->articles;
+    }
 }

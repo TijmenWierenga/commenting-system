@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TijmenWierenga\Commenting\Repositories;
 
 use PDO;
+use PDOStatement;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use TijmenWierenga\Commenting\Exceptions\ModelNotFoundException;
@@ -49,5 +50,30 @@ final class ArticleRepositorySql implements ArticleRepository
         $result = $statement->fetchColumn();
 
         return (bool) $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAll(): array
+    {
+        /** @var PDOStatement $statement */
+        $statement = $this->pdo->query('SELECT * FROM `articles`');
+        $statement->execute();
+
+        /** @var array $data */
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(
+            static function (array $article): Article {
+                return new Article(
+                    CommentableId::fromScalar(CommentableId::RESOURCE_TYPE_ARTICLE, $article['uuid']),
+                    $article['title'],
+                    $article['content'],
+                    Uuid::fromString($article['author_id'])
+                );
+            },
+            $data
+        );
     }
 }
