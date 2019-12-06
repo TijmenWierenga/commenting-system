@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use League\Route\Router;
 use TijmenWierenga\Commenting\Actions\{
+    GetAllArticlesAction,
     GetArticleAction,
     GetCommentAction,
     GetCommentsForArticleAction,
@@ -29,6 +30,11 @@ $router->get(
 $router->post(
     '/login',
     LoginAction::class
+);
+
+$router->get(
+    '/article',
+    GetAllArticlesAction::class
 );
 
 $router->get(
