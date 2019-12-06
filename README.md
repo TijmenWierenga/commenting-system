@@ -28,4 +28,7 @@ Verify that the stack has started successfully by requesting all comments for an
 curl http://localhost/article/780fdc7e-adeb-4cf5-9521-e53c52557a6d/comments
 ```
 
-Further documentation is available through the [ReDoc API documentation](http://localhost:8080).
+The service ships with an OpenAPI v3 specification.
+The API documentation is available through the [ReDoc API documentation](http://localhost:8080).
+
+If you like you can also import the OpenAPI specification into Postman to browse the API in a quick and eady way. The document is located at [`public/openapi.yaml`](public/openapi.yaml)
